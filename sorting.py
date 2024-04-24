@@ -16,3 +16,5 @@ def selection_sort(data: list) -> list:
         smallest = find_smallest(data)
         list_sorted.append(data.pop(smallest))
     return list_sorted
+
+
