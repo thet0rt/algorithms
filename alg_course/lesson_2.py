@@ -177,3 +177,72 @@ def find_difference(nums1: List[int], nums2: List[int]) -> List[int]:
             p1 += 1
             p2 += 1
     return result
+
+
+'''
+Односторонняя разница
+легко
+# решено
+
+# яндекс
+Даны два массива nums1 и nums2, отсортированные по возрастанию.
+
+Необходимо вернуть все элементы из nums1, которые не встречаются в nums2, в отсортированном по возрастанию порядке.
+
+Пример 1:
+
+Ввод: nums1 = [1,2,3,4,5], nums2 = [4,5,6]
+Вывод: [1,2,3]
+Пример 2:
+
+Ввод: nums1 = [1,2,2,3,3,4], nums2 = [0,0,0,3]
+Вывод: [1,2,2,4]
+Ограничения:
+
+len(nums1) >= 0
+len(nums2) >= 0
+'''
+
+# мое решение
+def find_difference(nums1: List[int], nums2: List[int]) -> List[int]:
+    p1 = 0
+    p2 = 0
+    result = []
+    while p1 < len(nums1):
+        if p2 >= len(nums2):
+            result.extend(nums1[p1:])
+            break
+        if nums1[p1] < nums2[p2]:
+            result.append(nums1[p1])
+            p1+=1
+        elif nums1[p1] > nums2[p2]:
+            p2+=1
+        else:
+            p1+=1
+    return result
+
+
+#эталонное решение
+def find_difference(nums1: List[int], nums2: List[int]) -> List[int]:
+    result = []
+    p1 = 0
+    p2 = 0
+
+    while p1 < len(nums1):
+        # если nums2 закончился — все оставшиеся из nums1 идут в результат
+        if p2 >= len(nums2):
+            result.append(nums1[p1])
+            p1 += 1
+            continue
+
+        # если текущий элемент nums1 меньше — он есть только в nums1
+        if nums1[p1] < nums2[p2]:
+            result.append(nums1[p1])
+            p1 += 1
+        elif nums1[p1] > nums2[p2]:
+            p2 += 1
+        else:
+            # при равных элементах пропускаем в nums1
+            # для верной обработки дублей в nums1
+            p1 += 1
+    return result
