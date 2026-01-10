@@ -76,4 +76,65 @@ def max_area(height: List[int]) -> int:
 
 nums = [2, 3, 4, 5, 18, 17, 6]
 
-max_area(nums)
+# max_area(nums)
+
+'''
+Дана строка s. Верните true, если s является палиндромом, или false в противном случае. Фраза является палиндромом, если после преобразования всех заглавных букв в строчные и удаления всех символов, кроме букв и цифр, она читается одинаково слева направо и справа налево.
+
+Буквенно-цифровые символы включают латинские буквы и цифры.
+
+Пример 1:
+
+Ввод: s = "A man, a plan, a canal: Panama"
+Вывод: true
+Объяснение: строка "amanaplanacanalpanama" является палиндромом
+Пример 2:
+
+Ввод: s = "AbaCdaba"
+Вывод: false
+Ограничения:
+
+len(s) >= 1
+'''
+
+def is_palindrome(s: str) -> bool:
+    s = s.lower()
+    p1 = 0
+    p2 = len(s) - 1
+    while p1 <= p2:
+        if s[p1] == s[p2]:
+            p1+=1
+            p2-=1
+            continue
+        if not (s[p1].isalpha() or s[p1].isdigit()):
+            p1+=1
+            continue
+        if not (s[p2].isalpha() or s[p2].isdigit()):
+            p2 -= 1
+            continue
+        return False
+    return True
+
+
+'''
+Эталонное решение палиндрома
+
+'''
+def is_palindrome_reference(s: str) -> bool:
+    l = 0
+    r = len(s) - 1
+    while l < r:
+        # переходим к следующей букве пока l и r
+        # не будут указывать на буквы или цифры
+        if not s[l].isalnum():
+            l += 1
+            continue
+        if not s[r].isalnum():
+            r -= 1
+            continue
+        # оба символа - буквы или цифры
+        if s[l].lower() != s[r].lower():
+            return False
+        l += 1
+        r -= 1
+    return True
