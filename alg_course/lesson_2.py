@@ -98,3 +98,82 @@ def fuzzy_match(s: str, t: str) -> bool:
         # Всегда двигаем указатель по t
         p2 += 1
     return p1 == len(s)
+
+
+'''
+Симметричная разница массивов
+средне
+# решено
+Даны два массива nums1 и nums2, отсортированные по возрастанию и состоящие из уникальных элементов.
+ Нужно найти все элементы, которые встречаются только в одном из массивов и вернуть их в порядке возрастания.
+
+Пример 1:
+
+Ввод: nums1 = [1,5,7,9], nums2 = [2,3,5,6,7,8]
+Вывод: [1,2,3,6,8,9]
+Пример 2:
+
+Ввод: nums1 = [2,3], nums2 = [1]
+Вывод: [1,2,3]
+Ограничения:
+
+len(nums1) + len(nums2) >= 1
+'''
+
+# мое решение
+def find_difference(nums1: List[int], nums2: List[int]) -> List[int]:
+    p1 = 0
+    p2 = 0
+    result = []
+    while p1 < len(nums1) or p2 < len(nums2):
+        if p1 >= len(nums1):
+            result.extend(nums2[p2:])
+            break
+        elif p2 >= len(nums2):
+            result.extend(nums1[p1:])
+            break
+        if nums1[p1] == nums2[p2]:
+            p1+=1
+            p2+=1
+            continue
+        if nums1[p1] < nums2[p2]:
+            result.append(nums1[p1])
+            p1+=1
+        else:
+            result.append(nums2[p2])
+            p2+=1
+    return result
+
+
+# эталонное решение
+def find_difference(nums1: List[int], nums2: List[int]) -> List[int]:
+    result = []
+    p1 = 0
+    p2 = 0
+
+    while p1 < len(nums1) or p2 < len(nums2):
+        # если вышли за границу nums2, значит нужно
+        #   добавить оставшиеся элементы из nums1
+        if p2 >= len(nums2):
+            result.append(nums1[p1])
+            p1 += 1
+            continue
+        # если вышли за границу nums1, значит нужно
+        #   добавить оставшиеся элементы из nums2
+        if p1 >= len(nums1):
+            result.append(nums2[p2])
+            p2 += 1
+            continue
+
+        # меньшее значение добавляем в ответ, а если
+        #  указатели равны, то двигаем оба указателя
+        if nums1[p1] < nums2[p2]:
+            result.append(nums1[p1])
+            p1 += 1
+        elif nums1[p1] > nums2[p2]:
+            result.append(nums2[p2])
+            p2 += 1
+        else:
+            p1 += 1
+            p2 += 1
+    return result
