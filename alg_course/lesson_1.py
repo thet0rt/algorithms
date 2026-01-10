@@ -138,3 +138,36 @@ def is_palindrome_reference(s: str) -> bool:
         l += 1
         r -= 1
     return True
+
+
+'''
+Разворот строки
+легко
+
+# озон
+Дан список символов chars. Нужно развернуть chars и вернуть измененный список в качестве ответа.
+
+Пример 1:
+
+Ввод: chars = ["p","e","r","f","e","c","t","i","o","n"]
+Вывод: ["n","o","i","t","c","e","f","r","e","p"]
+Пример 2:
+
+Ввод: chars = ["r","e","v","e","r","s","e"]
+Вывод: ["e","s","r","e","v","e","r"]
+Ограничения:
+
+len(chars) >= 0
+chars содержит только ascii символы
+'''
+
+from typing import *
+
+def reverse(chars: List[str]) -> List[str]:
+    p1 = 0
+    p2 = len(chars) - 1
+    while p1 <= p2:
+        chars[p1], chars[p2] = chars[p2], chars[p1]
+        p1 +=1
+        p2 -=1
+    return chars
