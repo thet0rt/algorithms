@@ -246,3 +246,126 @@ def find_difference(nums1: List[int], nums2: List[int]) -> List[int]:
             # для верной обработки дублей в nums1
             p1 += 1
     return result
+
+'''
+Хитрое сравнение строк
+сложно
+# решено
+
+# желтый банк
+
+# озон
+Даны строки s и t. Нужно вернуть true в случае, если строки будут одинаковыми после ввода в текстовый редактор. Символ # в текстовом редакторе означает, что предыдущий символ нужно стереть, а если перед # отсутствует символ, то стирать ничего не нужно.
+
+Пример 1:
+
+Ввод: s = "ac#b#ac", t = "abc##aa#b#c"
+Вывод: true
+Объяснение: "aac" = "aac"
+Пример 2:
+
+Ввод: s = "a#####b", t = "b"
+Вывод: true
+Объяснение: "b" = "b"
+Пример 3:
+
+Ввод: s = "abcd", t = "abcd#"
+Вывод: false
+'''
+
+# моё решение
+def compare(s: str, t: str) -> bool:
+    p1 = len(s) - 1
+    p2 = len(t) - 1
+    p1_skip = 0
+    p2_skip = 0
+    while p1 >= 0 or p2 >= 0:
+        if p1>=0 and s[p1] == '#':
+            p1_skip += 1
+            p1-=1
+            continue
+        if p2>=0 and t[p2] == '#':
+            p2_skip += 1
+            p2-=1
+            continue
+        if p1_skip > 0:
+            if s[p1] == '#':
+                p1_skip-=1
+                continue
+            p1-=1
+            p1_skip -= 1
+            continue
+        if p2_skip > 0:
+            if t[p2] == '#':
+                p2_skip-=1
+                continue
+            p2-=1
+            p2_skip-=1
+            continue
+        if p1 < 0 or p2 < 0:
+            return False
+        if s[p1] != t[p2]:
+            return False
+        p1-=1
+        p2-=1
+    return True
+
+#эталонное решение
+def findNextNonSkip(s: str, i: int) -> int:
+    skipCount = 0
+    while i >= 0 and (skipCount > 0 or s[i] == '#'):
+        if s[i] == '#':
+            skipCount += 1
+            i -= 1
+            continue
+        skipCount -= 1
+        i -= 1
+    return i
+
+def compare(s: str, t: str) -> bool:
+    p1, p2 = len(s), len(t)
+    while p1 > 0 and p2 > 0:
+        p1 = findNextNonSkip(s, p1 - 1)
+        p2 = findNextNonSkip(t, p2 - 1)
+        if p1 >= 0 and p2 >= 0 and s[p1] != t[p2]:
+            return False
+    return findNextNonSkip(s, p1 - 1) == findNextNonSkip(t, p2 - 1)
+
+
+# альтернативное эталонное решение
+def compare(s: str, t: str) -> bool:
+    p1 = len(s) - 1
+    p2 = len(t) - 1
+    p1_hashtag_counter = 0
+    p2_hashtag_counter = 0
+
+    def char_at(st: str, i: int):
+        return st[i] if 0 <= i < len(st) else None
+
+    while p1 >= 0 or p2 >= 0:
+        if p1 >= 0 and s[p1] == '#':
+            p1_hashtag_counter += 1
+            p1 -= 1
+            continue
+
+        if p2 >= 0 and t[p2] == '#':
+            p2_hashtag_counter += 1
+            p2 -= 1
+            continue
+
+        if p1 >= 0 and s[p1] != '#' and p1_hashtag_counter > 0:
+            p1 -= 1
+            p1_hashtag_counter -= 1
+            continue
+
+        if p2 >= 0 and t[p2] != '#' and p2_hashtag_counter > 0:
+            p2 -= 1
+            p2_hashtag_counter -= 1
+            continue
+
+        if p1 >= 0 and p2 >= 0 and s[p1] == t[p2]:
+            p1 -= 1
+            p2 -= 1
+        else:
+            return False
+    return True
