@@ -75,7 +75,7 @@ s всегда имеет достаточно места для размеще�
 
 from typing import *
 
-
+# мое решение
 def urlify(s: List[str], k: int) -> List[str]:
     p1 = 0
     p2 = len(s) - 1
@@ -84,11 +84,17 @@ def urlify(s: List[str], k: int) -> List[str]:
             p1 += 1
             continue
         rasst = p2 - p1-1
+        s[p1] = '%'
         for i in range(2):
+            print(i)
             p3 = p2
             for j in range(rasst):
                 s[p3], s[p3-1] = s[p3-1], s[p3]
                 p3-=1
+            if i == 0:
+                s[p3] = '0'
+            else:
+                s[p3] = '2'
         p1+=1
         k+=2
     return s
