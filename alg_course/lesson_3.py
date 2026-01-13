@@ -99,10 +99,36 @@ def urlify(s: List[str], k: int) -> List[str]:
         k+=2
     return s
 
-print(urlify(["h","e","l","l","o"," ","w","o","r","l","d","#","#"], 11))
-print(urlify(["a"," ","b"," ", " ", "c","#","#","#","#","#","#"], 6))
+# print(urlify(["h","e","l","l","o"," ","w","o","r","l","d","#","#"], 11))
+# print(urlify(["a"," ","b"," ", " ", "c","#","#","#","#","#","#"], 6))
 
+from typing import *
 
+# эталонное решение
+def urlify(s: List[str], k: int) -> List[str]:
+    # медленный указатель - куда ставим символ
+    slow = len(s) - 1
+    # быстрый указатель - откуда берем символ
+    fast = k - 1
+
+    while fast >= 0:
+        # если символ не пробел, то
+        #  дублируем значение на новое место
+        if s[fast] != " ":
+            s[slow], s[fast] = s[fast], s[slow]
+            slow -= 1
+            fast -= 1
+            continue
+
+        # если символ не пробел, заменяем его на %20
+        s[slow - 2] = "%"
+        s[slow - 1] = "2"
+        s[slow] = "0"
+        slow -= 3
+        fast -= 1
+    return s
+
+urlify(["h","e","l","l","o"," ","w","o","r","l","d","#","#"], 11)
 
 '''
 Удаление дубликатов 2
