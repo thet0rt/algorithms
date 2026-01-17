@@ -223,8 +223,35 @@ def unurlify(s: List[str]) -> List[str]:
 len(nums) >= 0
 '''
 
+# мое решение
+def remove_duplicates(nums: List[int]) -> List[int]:
+    p = 0
+    hash_map = set()
+    length = len(nums)
+    while p<len(nums):
+        if nums[p] in hash_map:
+            del nums[p]
+            length-=1
+            continue
+        hash_map.add(nums[p])
+        p+=1
+    return nums
 
 
+# эталонное решение
+def remove_duplicates(nums: List[int]) -> List[int]:
+    p1 = 0
+    p2 = 0
+    used = set()
+    while p2 < len(nums):
+        if nums[p2] not in used:
+            nums[p1], nums[p2] = nums[p2], nums[p1]
+            p1+=1
+        used.add(nums[p2])
+        p2+=1
+    return nums[:p1-1]
+
+print(remove_duplicates([3,2,1,1,0,4,5,2,0]))
 '''
 Поиск дубликата
 средне
