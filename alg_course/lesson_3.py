@@ -251,7 +251,7 @@ def remove_duplicates(nums: List[int]) -> List[int]:
         p2+=1
     return nums[:p1-1]
 
-print(remove_duplicates([3,2,1,1,0,4,5,2,0]))
+# print(remove_duplicates([3,2,1,1,0,4,5,2,0]))
 '''
 Поиск дубликата
 средне
@@ -395,6 +395,35 @@ def find_difference(nums1: List[int], nums2: List[int]) -> int:
 len(nums) >= 1
 '''
 
+# мое решение
+def remove_duplicates(nums: List[int]) -> List[int]:
+    used = set()
+    slow = 0
+    fast = 0
+    while fast < len(nums):
+        if nums[fast] not in used:
+            used.add(nums[fast])
+            nums[slow], nums[fast] = nums[fast], nums[slow]
+            fast+=1
+            slow+=1
+        else:
+            fast+=1
+    return nums[:slow]
+
+# эталонное решение
+def remove_duplicates(nums: List[int]) -> List[int]:
+    # Медленный и быстрый указатели
+    p1: int = 0
+    p2: int = 1
+
+    while p2 < len(nums):
+        if nums[p2] != nums[p1]:
+            p1 += 1
+            nums[p1] = nums[p2]
+        p2 += 1
+    # удаляем лишние элементы без выделения дополнительной памяти
+    del nums[p1 + 1:]
+    return nums
 
 '''
 Похожие строки
@@ -471,3 +500,5 @@ len(strs[i]) >= 1
 len(nums1) ≥ 1
 len(nums2) ≥ 1
 '''
+
+
