@@ -274,6 +274,27 @@ len(nums) >= 2
 '''
 
 
+
+
+def find_duplicate_num(nums: List[int]) -> int:
+    slow = 0
+    fast = 0
+
+    while True:
+        slow = nums[slow]
+        fast = nums[nums[fast]]
+        if slow == fast:
+            break
+    slow=0
+    while slow != fast:
+        slow = nums[slow]
+        fast = nums[fast]
+    return slow
+
+# find_duplicate_num([1, 4, 6, 2, 6, 3, 5])
+
+
+
 '''
 Минимальная разность
 легко
@@ -299,8 +320,56 @@ len(nums) >= 2
 
 len(nums1) >= 1
 len(nums2) >= 1
+
+Оценка сложности
+
+Время: O(n*log(n) + m*log(m)), где n - размер nums1, m - размер nums2
+Память: O(1)
+
+
 '''
 
+#мое решение
+def find_difference(nums1: List[int], nums2: List[int]) -> int:
+    nums1.sort()
+    nums2.sort()
+
+    p1 = 0
+    p2 = 0
+    result = abs(nums1[0] - nums2[0]) # 9
+    while p1<len(nums1) and p2<len(nums2):
+        if nums1[p1] == nums2[p2]:
+            return 0
+        new_result = nums1[p1] - nums2[p2]
+        if new_result <0:
+            p1+=1
+        else:
+            p2+=1
+        if abs(new_result) < result:
+            result = abs(new_result)
+    return result
+
+# эталонное решение
+def find_difference(nums1: List[int], nums2: List[int]) -> int:
+    nums1.sort()
+    nums2.sort()
+
+    p1 = 0
+    p2 = 0
+    min_diff = abs(nums1[p1] - nums2[p2])
+
+    while p1 < len(nums1) and p2 < len(nums2):
+        diff = abs(nums1[p1] - nums2[p2])
+        min_diff = min(min_diff, diff)
+
+        if nums1[p1] < nums2[p2]:
+            p1 += 1
+        elif nums1[p1] > nums2[p2]:
+            p2 += 1
+        else:
+            return 0
+
+    return min_diff
 
 '''
 Удаление повторов
