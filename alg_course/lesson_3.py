@@ -452,6 +452,58 @@ len(s) >= 0
 len(t) >= 0
 '''
 
+# мое решение
+def is_similar(s: str, t: str) -> bool:
+    if abs(len(s) - len(t)) > 1:
+        return False
+    p1 = 0
+    p2 = 0
+    errors = 0
+    while p1 < len(s) and p2 < len(t):
+        if errors > 1:
+            return False
+        if s[p1] != t[p2]:
+            errors+=1
+            if len(s) > len(t):
+                p1+=1
+            elif len(t) > len(s):
+                p2+=1
+            else:
+                p1+=1
+                p2+=1
+        else:
+            p1+=1
+            p2+=1
+    if errors <=1:
+        return True
+    return False
+
+
+# эталонное решение
+def find_missmatch(p1: int, s: str, p2: int, t: str) -> List[int]:
+    # Ищем первую позицию, где строки s и t различаются
+    while p1 < len(s) and p2 < len(t):
+        if s[p1] != t[p2]:
+            return [p1, p2]
+        p1 += 1
+        p2 += 1
+    return [p1, p2]
+
+def is_similar(s: str, t: str) -> bool:
+    # Строки считаются похожими, если равны или отличаются ровно на одно изменение:
+    # замену, удаление или вставку одного символа
+    if s == t:
+        return True
+    if abs(len(s) - len(t)) > 1:
+        return False
+
+    p1, p2 = find_missmatch(0, s, 0, t)
+
+    if len(s) == len(t):
+        return find_missmatch(p1 + 1, s, p2 + 1, t) == [len(s), len(t)]
+    if len(s) > len(t):
+        return find_missmatch(p1 + 1, s, p2, t) == [len(s), len(t)]
+    return find_missmatch(p1, s, p2 + 1, t) == [len(s), len(t)]
 
 '''
 Общий префикс
@@ -501,4 +553,11 @@ len(nums1) ≥ 1
 len(nums2) ≥ 1
 '''
 
+abde
+abde
+
+
+
+
+is_similar('egg', 'egga')
 
