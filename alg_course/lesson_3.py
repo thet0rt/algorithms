@@ -527,6 +527,40 @@ len(strs) >= 1
 len(strs[i]) >= 1
 '''
 
+# мое решение
+def longest_common_prefix(strs: List[str]) -> str:
+    if len(strs) == 1:
+        return strs[0]
+    prefix = strs[0]
+    for word in strs[1:]:
+        p = 0
+        len_prefix = min(len(prefix), len(word))
+        prefix = prefix[:len_prefix]
+        while p < len_prefix:
+            if prefix[p] != word[p]:
+                prefix = prefix[:p]
+                break
+            p+=1
+    return prefix
+
+
+# эталонное решение
+def longest_common_prefix(strs: List[str]) -> str:
+    # Определяем минимальную длину строки среди всех
+    min_len = len(strs[0])
+    for el in strs:
+        min_len = min(min_len, len(el))
+
+    # Проверяем совпадение символов на каждой позиции до min_len
+    for i in range(min_len):
+        ch = strs[0][i]
+        for el in strs:
+            if ch != el[i]:
+                return el[:i]
+
+    # Все символы совпадают на отрезке длины min_len
+    return strs[0][:min_len]
+
 '''
 Сумма отклонений
 средне
