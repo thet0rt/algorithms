@@ -587,10 +587,46 @@ len(nums1) ≥ 1
 len(nums2) ≥ 1
 '''
 
-abde
-abde
+# мое решение
+def find_minimum(nums1: List[int], nums2: List[int]) -> int:
+    nums1.sort()
+    nums2.sort()
+    p1 = 0
+    p2 = 0
+    full_sum = 0
+    while p2 < len(nums2):
+        while p1+1 < len(nums1):
+            sum1 = abs(nums2[p2] - nums1[p1])
+            sum2 = abs(nums2[p2] - nums1[p1+1])
+            if sum1 < sum2:
+                break
+            p1+=1
+        sum1 = abs(nums2[p2] - nums1[p1])
+        full_sum += sum1
+        p2+=1
+    return full_sum
 
 
+# эталонное решение
+def find_minimum(nums1: List[int], nums2: List[int]) -> int:
+    # Сортируем оба массива
+    nums1.sort()
+    nums2.sort()
+
+    p1 = 0
+    p2 = 0
+    total = 0
+
+    # Для каждого элемента nums2 находим ближайший в nums1
+    while p2 < len(nums2):
+        if p1 < len(nums1) - 1 and abs(nums2[p2] - nums1[p1]) > abs(nums2[p2] - nums1[p1 + 1]):
+            p1 += 1
+        else:
+            # Добавляем минимальную разницу
+            total += abs(nums2[p2] - nums1[p1])
+            p2 += 1
+
+    return total
 
 
 is_similar('egg', 'egga')
