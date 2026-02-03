@@ -739,3 +739,35 @@ def compress_spaces(chars: List[str]) -> List[str]:
 
     return chars[:slow]
 
+
+# мое решение
+def merge_two_sorted_arrays(arr1: List[int], m: int, arr2: List[int], n: int) -> List[int]:
+    if n == 0:
+        return arr1
+    p1 = m-1
+    p2 = n-1
+    p3 = len(arr1)-1
+    while p3 >=0:
+        if p1 >= 0 and arr1[p1] > arr2[p2]:
+            arr1[p1], arr1[p3] = arr1[p3], arr1[p1]
+            p1-=1
+        else:
+            arr1[p3] = arr2[p2]
+            p2-=1
+        p3-=1
+    return arr1
+
+# эталонное решение
+def merge_two_sorted_arrays(nums1: List[int], m: int, nums2: List[int], n: int) -> List[int]:
+    p1 = m - 1
+    p2 = n - 1
+    idx = len(nums1) - 1
+    while p1 >= 0 or p2 >= 0:
+        if p2 < 0 or p1 >= 0 and p2 >= 0 and nums1[p1] > nums2[p2]:
+            nums1[idx] = nums1[p1]
+            p1 -= 1
+        else:
+            nums1[idx] = nums2[p2]
+            p2 -= 1
+        idx -= 1
+    return nums1
