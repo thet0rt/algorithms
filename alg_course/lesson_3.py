@@ -686,3 +686,56 @@ def is_almost_palindrome(s: str) -> bool:
                    is_substring_palindrome(s, l, r - 1)
     # Строка уже палиндром
     return True
+
+
+'''
+Сжатие пробелов
+легко
+
+# островок
+
+# яндекс
+Дан массив символов chars. Замените все подряд идущие пробелы (в том числе в начале и в конце) на один пробел. Все изменения должны быть внесены в исходный массив (без создания нового). Верните изменённый массив.
+
+'''
+
+# мое решение
+def compress_spaces(chars: List[str]) -> List[str]:
+    slow = 0
+    fast = 0
+    move_space = True
+    while fast < len(chars):
+        if chars[fast] != ' ':
+            chars[slow], chars[fast] = chars[fast], chars[slow]
+            move_space = True
+            slow+=1
+
+        elif move_space:
+            chars[slow], chars[fast] = chars[fast], chars[slow]
+            move_space=False
+            slow+=1
+        else:
+            pass
+        fast+=1
+    return chars[:slow]
+
+# compress_spaces(['a', ' ', ' ', 'b', ' ', 'c', ' ', ' ', ' '])
+
+# эталонное решение
+def compress_spaces(chars: List[str]) -> List[str]:
+    slow: int = 0
+    fast: int = 0
+    spaces: int = 0
+
+    while fast < len(chars):
+        c = chars[fast]
+        spaces = spaces + 1 if c == ' ' else 0
+
+        if spaces <= 1:
+            # Меняем элементы местами
+            chars[slow], chars[fast] = chars[fast], chars[slow]
+            slow += 1
+        fast += 1
+
+    return chars[:slow]
+
