@@ -631,3 +631,58 @@ def find_minimum(nums1: List[int], nums2: List[int]) -> int:
 
 is_similar('egg', 'egga')
 
+'''
+Почти палиндром
+средне
+# решено
+
+# островок
+
+# яндекс
+Дана строка s. Нужно вернуть true, если из неё можно удалить не более одного символа, чтобы получился палиндром, и false — в противном случае.
+
+Палиндром — это слово или фраза, которые читаются одинаково слева направо и справа налево.
+'''
+# мой вариант
+def is_almost_palindrome(s: str) -> bool:
+    p1 = 0
+    p2 = len(s) - 1
+    errors = 0
+    while p1 < p2:
+        if errors > 1:
+            return False
+        if s[p1] != s[p2]:
+            errors += 1
+            if s[p1+1] == s[p2]:
+                p1+=1
+                continue
+            elif s[p2-1] == s[p1]:
+                p2-=1
+                continue
+            else:
+                return False
+        p1+=1
+        p2-=1
+    return True
+
+
+# эталонный вариант
+# Проверяет, является ли подстрока s[l..r] палиндромом
+def is_substring_palindrome(s: str, l: int, r: int) -> bool:
+    while l < r:
+        if s[l] != s[r]:
+            return False
+        l += 1
+        r -= 1
+    return True
+
+def is_almost_palindrome(s: str) -> bool:
+    for l, r in zip(range(len(s)), reversed(range(len(s)))):
+        if l >= r:
+            break
+        if s[l] != s[r]:
+            # Пробуем удалить символ либо слева, либо справа
+            return is_substring_palindrome(s, l + 1, r) or \
+                   is_substring_palindrome(s, l, r - 1)
+    # Строка уже палиндром
+    return True
