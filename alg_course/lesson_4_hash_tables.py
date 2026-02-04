@@ -136,3 +136,51 @@ def route(tickets: List[List[str]]) -> List[str]:
     for _ in range(len(tickets)):
         result.append(mapping[result[-1]])
     return result
+
+
+'''
+Слово - анаграмма
+легко
+# решено
+
+# озон
+
+# яндекс
+Даны две строки s и t, нужно вернуть true, если t является анаграммой s, и false в противном случае.
+
+Анаграмма — это слово или фраза, образованная путем перестановки букв другого слова или фразы, с использованием всех исходных букв ровно один раз.
+
+Пример 1:
+
+Ввод: s="hello", t="lolhe"
+Вывод: true
+Пример 2:
+
+Ввод: s="car", t="cat"
+Вывод: false
+Пример 3:
+
+Ввод: s="abc", t="abcc"
+Вывод: false
+'''
+
+# решение 1
+def is_valid_anagram(s: str, t: str) -> bool:
+    char_count_s = {}
+    char_count_t = {}
+    for char in s:
+        char_count_s[char] = char_count_s.get(char, 0) + 1
+    for char in t:
+        char_count_t[char] = char_count_t.get(char, 0) + 1
+    return char_count_s == char_count_t
+
+# решение 2
+def is_valid_anagram(s: str, t: str) -> bool:
+    char_counter = [0 for _ in range(26)]
+
+    for char in s:
+        char_counter[ord(char) - ord('a')] += 1
+    for char in t:
+        char_counter[ord(char) - ord('a')] -= 1
+
+    return char_counter == [0 for _ in range(26)]
