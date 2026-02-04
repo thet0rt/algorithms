@@ -78,3 +78,61 @@ def is_isomorphic(s: str, t: str) -> bool:
         s_map[s[i]] = t[i]
         t_map[t[i]] = s[i]
     return True
+
+
+'''
+Маршрут туриста
+средне
+# решено
+
+# яндекс
+Дан набор пар городов tickets,
+ где tickets[i] = [город отправления, город прибытия] в которых побывал турист.
+  Нужно восстановить маршрут следования туриста.
+
+Известно, что все города относятся к одному путешествию,
+ и что каждый следующий перелёт турист начинал из того города, 
+ в котором закончил предыдущий и никакой город не был посещён туристом дважды.
+'''
+
+# мое решение
+def route(tickets: List[List[str]]) -> List[str]:
+    finish_city = set()
+    route_map = {}
+    for c1, c2 in tickets:
+        route_map[c1] = c2
+        finish_city.add(c2)
+    for city in route_map.keys():
+        if city not in finish_city:
+            start_city = city
+    route = []
+    while start_city:
+        route.append(start_city)
+        start_city = route_map.get(start_city)
+    return route
+
+
+# эталонное решение
+def route(tickets: List[List[str]]) -> List[str]:
+    # destination_cities - сет городов, куда прибывал турист
+    destination_cities = set()
+    # ключ: город отправления, значение: город прибытия
+    mapping = {}
+    for ticket in tickets:
+        destination_cities.add(ticket[1])
+        mapping[ticket[0]] = ticket[1]
+
+    # ищем город из которого было отправление
+    #  этот город ни разу не должен упоминяться как
+    #  пункт прибытия
+    start_city = ""
+    for ticket in tickets:
+        if ticket[0] not in destination_cities:
+            start_city = ticket[0]
+            break
+
+    # начиная со start_city восстанавливаем маршрут
+    result = [start_city]
+    for _ in range(len(tickets)):
+        result.append(mapping[result[-1]])
+    return result
