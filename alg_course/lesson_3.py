@@ -771,3 +771,29 @@ def merge_two_sorted_arrays(nums1: List[int], m: int, nums2: List[int], n: int) 
             p2 -= 1
         idx -= 1
     return nums1
+
+
+
+def reverse_vowels(s: str) -> str:
+    vowels = {'a', 'e', 'i', 'o', 'u', 'y'}
+
+    def get_next_vowel_index(s, p):
+        while p >= 0:
+            if s[p] in vowels:
+                return p
+            p-=1
+
+    vowels_reversed = []
+    p1 = 0
+    p2 = len(s) - 1
+    while p1 < len(s):
+        if s[p1] not in vowels:
+            vowels_reversed.append(s[p1])
+        else:
+            p2 = get_next_vowel_index(s, p2)
+            vowels_reversed.append(s[p2])
+            p2-=1
+        p1+=1
+    return ''.join(vowels_reversed)
+
+reverse_vowels('aeiou')
