@@ -184,3 +184,47 @@ def is_valid_anagram(s: str, t: str) -> bool:
         char_counter[ord(char) - ord('a')] -= 1
 
     return char_counter == [0 for _ in range(26)]
+
+'''
+Сортировка 012
+легко
+# решено
+
+# озон
+Дан массив colors, элементы которого представляют один из трех цветов:
+ красный (0), зелёный (1) и синий (2). Необходимо отсортировать массив так,
+  чтобы цвета шли в порядке: красный, зелёный, синий, и вернуть изменённый массив.
+
+Важно, чтобы сортировка осуществлялась in-place,
+ что означает выполнение сортировки без использования дополнительной памяти для копий массива.
+'''
+
+# мое решение
+def sort_012(colors: List[int]) -> List[int]:
+    p = 0
+    hash_map = {0: 0, 1: 0, 2: 0}
+    for idx, color in enumerate(colors):
+        hash_map[color] = hash_map.get(color, 0) + 1
+
+    for i in range(0, 3):
+        for j in range(hash_map[i]):
+            colors[p] = i
+            p += 1
+    return colors
+
+
+# эталонное решение
+def sort_012(colors: List[int]) -> List[int]:
+    # индекс: число, значение: кол-во повторений
+    count = [0 for _ in range(3)]
+    # делаем подсчет
+    for num in colors:
+        count[num] += 1
+
+    # сортируем
+    i = 0
+    for j in range(3):
+        for _ in range(count[j]):
+            colors[i] = j
+            i += 1
+    return colors
