@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import *
 
 def two_sum(nums: list[int], target: int):
@@ -228,3 +229,64 @@ def sort_012(colors: List[int]) -> List[int]:
             colors[i] = j
             i += 1
     return colors
+
+
+'''
+Группировка анаграмм
+средне
+# решено
+
+# яндекс
+Дан массив строк strs и нужно сгруппировать анаграммы вместе. Ответ можно вернуть в любом порядке.
+
+Анаграмма — это слово или фраза, образованная путем перестановки букв другого слова или фразы, с использованием всех исходных букв ровно один раз.
+'''
+
+# мое решение - плохонькое.. :(
+def group_anagrams(strs: List[str]) -> List[List[str]]:
+    def is_anagram(s, t):
+        if len(s) != len(t):
+            return False
+        char_count = [0 for i in range(26)]
+        for char in s:
+            char_count[ord(char) - ord('a')] += 1
+        for char in t:
+            char_count[ord(char) - ord('a')] -= 1
+        return char_count == [0 for i in range(26)]
+
+    p1 = 0
+    anagrams_grouped = []
+    used = set()
+    while p1 < len(strs):
+        word = strs[p1]
+        if word in used:
+            p1 += 1
+            continue
+        anagrams = [word]
+        p2 = p1 + 1
+        used.add(word)
+        while p2 < len(strs):
+            word_2 = strs[p2]
+            if is_anagram(word, word_2):
+                used.add(word_2)
+                anagrams.append(word_2)
+            p2 += 1
+        anagrams_grouped.append(anagrams)
+        p1 += 1
+    return anagrams_grouped
+
+
+# эталонное решение
+def group_anagrams(strs: List[str]) -> List[List[str]]:
+    anagram_groups = defaultdict(list)
+    for aragram in strs:
+        # индекс - соответствует букве (0 - 'a', 1 - 'b', ...)
+        #  значение - сколько раз встретили букву
+        count_chars = [0 for j in range(26)]
+        for ch in aragram:
+            count_chars[ord(ch) - ord('a')] += 1
+
+        # добавляем анаграмму группу
+        anagram_groups[tuple(count_chars)].append(aragram)
+
+    return list(anagram_groups.values())
