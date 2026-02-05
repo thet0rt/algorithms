@@ -290,3 +290,47 @@ def group_anagrams(strs: List[str]) -> List[List[str]]:
         anagram_groups[tuple(count_chars)].append(aragram)
 
     return list(anagram_groups.values())
+
+
+'''
+Перестановка букв
+средне
+# решено
+
+# яндекс
+Дана строка s. Нужно вернуть true, если после перестановки символов в строке может получится палиндром, и false в противном случае.
+
+Палиндром — это строка, которая читается одинаково слева направо и справа налево.
+'''
+
+# мое решение
+def is_palindrome_permutation(s: str) -> bool:
+    char_counter = [0 for _ in range(26)]
+    for char in s:
+        char_counter[ord(char) - ord('a')] += 1
+    odd = 0
+    for count in char_counter:
+        if count % 2 != 0:
+            odd+=1
+        if odd>1:
+            return False
+    return True
+
+# эталонное решение
+def is_palindrome_permutation(s: str) -> bool:
+    # слово можно сделать палиндромом при условии, что каждая буква
+    #  встречается четное кол-во раз или же только 1 буква нечетное число раз
+
+    # индекс - соответствует букве (0 - 'a', 1 - 'b', ...)
+    #  значение - 0 будет означать, что у буквы пара есть/мы не встретили букву
+    #  (нам не нужно для решения задачи резличать эти случаи)
+    #  значение - 1, что у буква встретилась нечетное число раз
+    count = [0 for _ in range(26)]
+    for char in s:
+        # ord(char) - ord('a') - позволяет перевести 'a' -> 0, 'b' -> 1 и т д
+
+        # подсчитываем четность с которой встречали букву
+        count[ord(char) - ord('a')] = (count[ord(char) - ord('a')] + 1) % 2
+
+    # если 1 или 0 букв встречается нечетное число раз - значит можно сделать палиндром
+    return sum(count) <= 1
