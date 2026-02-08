@@ -522,3 +522,78 @@ def find_common_prefix(nums1: List[int], nums2: List[int]) -> List[int]:
                 common_count += 1
         result.append(common_count)
     return result
+
+
+'''
+Общий префикс с учетом кратности
+средне
+# решено
+
+# яндекс
+Даны два массива целых чисел nums1 и nums2 одинаковой длины. Для каждого префикса нужно посчитать число общих элементов c учетом кратности.
+
+"С учетом кратности" - это значит, что присутствие одного и того же числа в префиксах считается с учетом наличия дубликатов.
+
+Пример 1:
+
+Ввод: nums1 = [2,2,3,4], nums2 = [3,2,4,2]
+Вывод: [0,1,2,4]
+0 = [2] и [3] имеют 0 общих элементов
+1 = [2,2] и [3,2] имеют 1 общий элемент (2)
+2 = [2,2,3] и [3,2,4] имеют 2 общих элемента (2,3)
+4 = [2,2,3,4] и [3,2,4,2] имеют 4 общих элемента (2,2,3,4)
+(0,1,2,3)
+Пример 2:
+
+Ввод: nums1 = [3,2,2], nums2 = [2,1,2]
+Вывод: [0,1,2]
+Ограничения:
+
+len(nums1) = len(nums2) >= 1
+'''
+
+
+# мое решение
+def find_common_prefix_v2(nums1: List[int], nums2: List[int]) -> List[int]:
+    used_1 = defaultdict(int)
+    used_2 = defaultdict(int)
+    common_count = 0
+    result = []
+
+    for i in range(len(nums1)):
+        used_1[nums1[i]] += 1
+        if used_1[nums1[i]] > 0 and used_2[nums1[i]] > 0:
+            common_count += 1
+            used_1[nums1[i]] -= 1
+            used_2[nums1[i]] -= 1
+        used_2[nums2[i]] += 1
+        if used_2[nums2[i]] > 0 and used_1[nums2[i]] > 0:
+            common_count += 1
+            used_1[nums2[i]] -= 1
+            used_2[nums2[i]] -= 1
+        result.append(common_count)
+    return result
+
+
+# эталонное решение
+def find_common_prefix_v2(nums1: List[int], nums2: List[int]) -> List[int]:
+    n = len(nums1)
+    count1 = defaultdict(int)
+    count2 = defaultdict(int)
+    common_count = 0
+    result = []
+
+    for i in range(n):
+        count1[nums1[i]] += 1
+        # если после увеличения count1 содержит меньшее или равное значение
+        # чисел nums1[i], значит +1 общий элемент
+        if count1[nums1[i]] <= count2[nums1[i]]:
+            common_count += 1
+
+        count2[nums2[i]] += 1
+        # если после увеличения count2 содержит меньшее или равное значение
+        # чисел nums2[i], значит +1 общий элемент
+        if count2[nums2[i]] <= count1[nums2[i]]:
+            common_count += 1
+        result.append(common_count)
+    return result
