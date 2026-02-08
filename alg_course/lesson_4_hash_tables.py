@@ -466,3 +466,59 @@ def find_common_prefix(nums1: List[int], nums2: List[int]) -> List[int]:
     return result
 
 
+'''
+Общий префикс без учета кратности
+средне
+# решено
+
+# яндекс
+Даны два массива целых чисел nums1 и nums2 одинаковой длины. Для каждого префикса нужно посчитать число общих элементов без учета кратности.
+
+"Без учета кратности" - это значит, что присутствие одного и того же числа в префиксах считается только один раз независимо от количества повторов.
+
+'''
+from collections import defaultdict
+
+# мое решение. Через хэш-мапу, зато подходит для любых чисел, а в условии не сказано, что они будут от 1 до len(nums1)
+def find_common_prefix(nums1: List[int], nums2: List[int]) -> List[int]:
+    hash_map = defaultdict(int)
+    p = 0
+    common_counter = 0
+    result = []
+    while p < len(nums1):
+        if hash_map[nums1[p]] != 1:
+            hash_map[nums1[p]] += 1
+        if hash_map[nums1[p]] == 3:
+            common_counter += 1
+            hash_map[nums1[p]] += 1
+        if hash_map[nums2[p]] != 2:
+            hash_map[nums2[p]] += 2
+        if hash_map[nums2[p]] == 3:
+            common_counter += 1
+            hash_map[nums2[p]] += 1
+        result.append(common_counter)
+        p += 1
+    return result
+
+
+# эталонное решение
+def find_common_prefix(nums1: List[int], nums2: List[int]) -> List[int]:
+    used1 = set()
+    used2 = set()
+    common_count = 0
+    result = []
+
+    for i in range(len(nums1)):
+        # новый элемент из nums1
+        if nums1[i] not in used1:
+            used1.add(nums1[i])
+            if nums1[i] in used2:
+                common_count += 1
+
+        # новый элемент из nums2
+        if nums2[i] not in used2:
+            used2.add(nums2[i])
+            if nums2[i] in used1:
+                common_count += 1
+        result.append(common_count)
+    return result
