@@ -1,4 +1,5 @@
 from collections import defaultdict
+from sys import prefix
 from typing import *
 
 def two_sum(nums: list[int], target: int):
@@ -334,3 +335,134 @@ def is_palindrome_permutation(s: str) -> bool:
 
     # если 1 или 0 букв встречается нечетное число раз - значит можно сделать палиндром
     return sum(count) <= 1
+
+
+'''
+Условие
+Даны два целочисленных массива nums1 и nums2 длины n. Оба массива содержат только числа от 1 до n включительно, при этом каждое число обязательно встречается ровно один раз в каждом из массивов.  
+
+Нужно найти общий префиксный массив для nums1 и nums2.  
+
+Пример
+Ввод: nums1 = [2,1,3,4,5], nums2 = [3,1,2,5,4]
+Вывод: [0,1,3,3,5]
+Объяснение:
+0 = [2] и [3] имеют 0 общих элементов
+1 = [2,1] и [3,1] имеют 1 общий элемент (1)
+3 = [2,1,3] и [3,1,2] имеют 3 общих элемента (1,2,3)
+3 = [2,1,3,4] и [3,1,2,5] имеют 3 общих элемента (1,2,3)
+5 = [2,1,3,4,5] и [3,1,2,5,4] имеют 5 общих элементов (1,2,3,4,5)
+
+'''
+
+# мое решение - не очень хорошо из-за prefix_list.append(sum(hash_map.values()))
+# тк тут каждый раз мы проходимся по всему списку, будет n^2
+def find_common_prefix(nums1: List[int], nums2: List[int]) -> List[int]:
+    p = 0
+    hash_map = {}
+    prefix_list = []
+    while p < len(nums1):
+        if nums1[p] in hash_map:
+            hash_map[nums1[p]] = 1
+        else:
+            hash_map[nums1[p]] = 0
+        if nums2[p] in hash_map:
+            hash_map[nums2[p]] = 1
+        else:
+            hash_map[nums2[p]] = 0
+        prefix_list.append(sum(hash_map.values()))
+        p+=1
+    return prefix_list
+
+
+# print(find_common_prefix([2,1,3,4,5], [3,1,2,5,4]))
+
+#эталонное решение через хэш-таблицу
+from typing import *
+from collections import defaultdict
+
+#Время: O(n), где n — размер входного массива. Линейная сложность, так как каждый
+#элемент проходит через цикл.
+#Память: O(n), где n — размер входного массива. Для подсчета мы используем хеш-таблицу,
+#а для результата — массив.
+def find_common_prefix(nums1: List[int], nums2: List[int]) -> List[int]:
+    n = len(nums1)
+    prefix_common_array = [0] * n
+
+    # Используем defaultdict для подсчета количества встреченных элементов
+    count_map = defaultdict(int)
+    common_count = 0
+
+    for current_index in range(n):
+        # Ключ здесь элемент массива, а значение - количество повторений
+        count_map[nums1[current_index]] += 1
+
+        # Если элемент из nums1 уже встречался в nums2, увеличиваем общий счетчик
+        if count_map[nums1[current_index]] == 2:
+            common_count += 1
+
+        count_map[nums2[current_index]] += 1
+
+        # Если элемент из nums2 уже встречался в nums1, увеличиваем общий счетчик
+        if count_map[nums2[current_index]] == 2:
+            common_count += 1
+
+        # Сохраняем количество общих элементов на текущем индексе
+        prefix_common_array[current_index] = common_count
+
+    return prefix_common_array
+
+
+# мое через массив (после того, как уже посмотрел)
+def find_common_prefix(nums1: List[int], nums2: List[int]) -> List[int]:
+    n = len(nums1)
+    counter = [0 for _ in range(n)]
+    p = 0
+    common_counter = 0
+    result = []
+    while p < len(nums1):
+        counter[nums1[p]-1]+=1
+        if counter[nums1[p]-1] == 2:
+            common_counter +=1
+        counter[nums2[p]-1]+=1
+        if counter[nums2[p]-1] == 2:
+            common_counter+=1
+        result.append(common_counter)
+        p+=1
+    return result
+
+# print(find_common_prefix([2,1,3,4,5], [3,1,2,5,4]))
+
+# эталонное решение через массив
+from typing import *
+
+#Время: O(n), где n — размер входного массива. Линейная сложность, так как каждый
+#элемент проходит через цикл.
+#Память: O(n), где n — размер входного массива. Для подсчета мы используем хеш-таблицу,
+#а для результата — массив.
+def find_common_prefix(nums1: List[int], nums2: List[int]) -> List[int]:
+    result = []
+    frequency = [0] * (len(nums1) + 1)
+
+    common = 0
+    for i in range(len(nums1)):
+        frequency[nums1[i]] += 1
+        frequency[nums2[i]] += 1
+
+        # если общий элемент, то +1 к общим элементам на префиксе
+        if nums1[i] == nums2[i]:
+            common += 1
+            result.append(common)
+            continue
+
+        # если до этого уже встречали nums1[i], то +1
+        if frequency[nums1[i]] == 2:
+            common += 1
+        # если до этого уже встречали nums2[i], то +1
+        if frequency[nums2[i]] == 2:
+            common += 1
+
+        result.append(common)
+    return result
+
+
