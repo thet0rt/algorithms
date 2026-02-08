@@ -597,3 +597,89 @@ def find_common_prefix_v2(nums1: List[int], nums2: List[int]) -> List[int]:
             common_count += 1
         result.append(common_count)
     return result
+
+
+# мое решение
+def find_hirsch_index(citations: List[int]) -> int:
+    citations.sort()
+    current_h = len(citations)
+    p = 0
+    while True:
+        if current_h > citations[p]:
+            p+=1
+            current_h-=1
+            continue
+        else:
+            return current_h
+
+
+# citations = [3, 0, 6, 1, 5]
+# find_hirsch_index(citations)
+
+# эталонное решение
+def find_hirsch_index(citations):
+    n = len(citations)
+
+    # Индекс — число цитирований, а значение — количество статей
+    # с таким количеством цитирований
+    buckets = [0] * (n + 1)
+
+    for citation in citations:
+        if citation >= n:
+            # При citation >= n можем увеличивать число статей
+            # только последнего бакета, потому что для последовательности
+            # из n статей индекс Хирша максимум n
+            buckets[n] += 1
+        else:
+            buckets[citation] += 1
+
+    count = 0
+    # Перебираем значения от максимального возможного индекса n к 0,
+    # чтобы найти наибольший индекс i,
+    # где количество статей с цитированием >= i
+    for i in range(n, -1, -1):
+        count += buckets[i]
+        if count >= i:
+            # Если число таких статей больше или равно текущему i,
+            # это и есть индекс Хирша
+            return i
+
+    return 0
+
+
+def find_hirsch_index(citations: List[int]) -> int:
+    n = len(citations)
+    buckets = [0 for i in range(n + 1)]
+
+    for citation in citation:
+        if citation > n:
+            buckets[n] += 1
+            continue
+        buckets[citation] += 1
+
+    common_count = 0
+    while n >= 0:
+        common_count += buckets[n]
+        if n >= common_count:
+            return n
+    return n
+
+
+# сам переписал решение после того, как посмотрел эталонное
+def find_hirsch_index(citations: List[int]) -> int:
+    n = len(citations)
+    buckets = [0 for i in range(n + 1)]
+
+    for citation in citations:
+        if citation > n:
+            buckets[n] += 1
+            continue
+        buckets[citation] += 1
+
+    common_count = 0
+    while n >= 0:
+        common_count += buckets[n]
+        if common_count >= n:
+            return n
+        n -= 1
+    return n
