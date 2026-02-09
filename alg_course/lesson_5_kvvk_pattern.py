@@ -152,3 +152,93 @@ def is_valid_sudoku(board: List[List[str]]) -> bool:
             cols.add((j, val))
             blocks.add((blockIdx, val))
     return True
+
+'''
+Соревнования по числу шaгов
+средне
+# решено
+
+# авито
+Недавно закончился чемпионат по шагам и тебе нужно подвести его итоги! Дан массив statistics, где statistics[i] = [[id участника, число шагов в i-ый день], ...]. Нужно вернуть id всех участников, которые прошли максимальное число шагов и одновременно с этом принимали участие в соревнованиях каждый день. Результат можно вернуть в любом порядке.
+
+Если ни один из участников не принимал участие в соревнованиях каждый день, то нужно вернуть пустой массив.
+'''
+# мое решение
+def find_competition_winners(statistics: List[List[List[int]]]) -> List[int]:
+    competition = {key: value for key, value in statistics[0]}
+    for day, statistic in enumerate(statistics[1:]):
+        competition_upd = {}
+        for participant_id, steps in statistic:
+            if participant_id not in competition:
+                continue
+            competition_upd[participant_id] = steps + competition[participant_id]
+        competition = competition_upd
+
+    if not competition:
+        return []
+    max_steps = 0
+    result = []
+    for participant_id, steps in competition.items():
+        if steps == max_steps:
+            result.append(participant_id)
+        if steps > max_steps:
+            result = [participant_id]
+            max_steps = steps
+
+    return result
+
+#
+# find_competition_winners([[[2,4000],[1,500],[3,2000]],
+#                           [[1,5000],[3,150],[2,1000]],
+#                           [[2,3420],[1,10000],[3,12850]]])
+
+
+# эталонное решение
+def find_competition_winners(statistics: List[List[List[int]]]) -> List[int]:
+    user_stats = {}
+    # max_steps_count: максимальное число шагов среди участников, которые
+    # участвовали каждый день
+    max_steps_count = 0
+    for day in statistics:
+        for user in day:
+            user_id, user_steps_count = user
+            if user_id not in user_stats:
+                user_stats[user_id] = [0, 0]
+
+            # увеличиваем кол-во дней и число шагов для user_id
+            days_count = user_stats[user_id][0] + 1
+            steps_count = user_steps_count + user_stats[user_id][1]
+            user_stats[user_id] = [days_count, steps_count]
+
+            # обновляем max_steps_count, если было участие во всех днях
+            if days_count == len(statistics):
+                max_steps_count = max(max_steps_count, steps_count)
+
+    # формируем результирующий массив из id участников
+    result = []
+    for user_id in user_stats:
+        user_stat = user_stats[user_id]
+        if user_stat[0] == len(statistics) and user_stat[1] == max_steps_count:
+            result.append(user_id)
+    return result
+
+
+# мое решение после того, как посмотрел
+def find_competition_winners(statistics: List[List[List[int]]]) -> List[int]:
+    days = len(statistics)
+    new_stat = {}
+    max_steps = 0
+    result = []
+    for day, statistic in enumerate(statistics):
+        for participant_id, steps in statistic:
+            if participant_id not in new_stat:
+                new_stat[participant_id] = [0, 0]  # steps, day
+            new_stat[participant_id][0] += steps
+            new_stat[participant_id][1] += 1
+            if new_stat[participant_id][1] == days and new_stat[participant_id][0] == max_steps:
+                result.append(participant_id)
+            if new_stat[participant_id][1] == days and new_stat[participant_id][0] > max_steps:
+                result = [participant_id]
+                max_steps = new_stat[participant_id][0]
+
+    return result
