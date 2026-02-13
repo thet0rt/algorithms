@@ -663,3 +663,66 @@ def find_length(nums: List[int]) -> int:
         # на каждой итерации обновляем ответ
         max_length = max(max_length, curr_length)
     return max_length
+
+
+'''
+Простой калькулятор
+средне
+# решено
+
+# яндекс
+Дан массив s с положительными числами и знаками * и +. Нужно вернуть результат вычислений и важно, чтобы решение было за O(1) по дополнительной памяти.
+
+Пример 1:
+
+Ввод: s = ["2","*","3","*","1","+","2","+","2","+","2","*","0","*","13","+","1"]
+Вывод: 11
+Пример 2:
+
+Ввод: s = ["1","+","2","+","3"]
+Вывод: 6
+Ограничения:
+
+len(s) >= 1
+'''
+# мое решение
+def calculate(s: List[str]) -> int:
+    current_sum = int(s[0])
+    p1=1
+
+    while p1<len(s):
+        if s[p1] == '*':
+            current_sum = current_sum * int(s[p1+1])
+            p1+=2
+        elif s[p1] == '+':
+            subcalculation = int(s[p1+1])
+            p2 = p1+2
+            while p2<len(s):
+                if s[p2] == '+':
+                    break
+                else:
+                    subcalculation = subcalculation * int(s[p2+1])
+                    p2 +=2
+            current_sum += subcalculation
+            p1 = p2
+    return current_sum
+
+
+# эталонное решение
+def calculate(s: List[str]) -> int:
+    result = 0
+    # prev_multiply - произведение подряд идущих чисел
+    prev_multiply = int(s[0])
+    i = 0
+    # итерируемся по знакам
+    for i in range(1, len(s), 2):
+        if s[i] == "*":
+            # при умножении домножаем следующее число на накопленное произведение
+            prev_multiply *= int(s[i + 1])
+        elif s[i] == "+":
+            # когда встречаем знак "+" обновляем prev_multiply и прибавляем
+            #  текущее произведение подряд идущих чисел в результат
+            result += prev_multiply
+            prev_multiply = int(s[i + 1])
+    result += prev_multiply
+    return result
