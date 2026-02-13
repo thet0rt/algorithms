@@ -499,3 +499,52 @@ def find_palindrome_length(s: str) -> int:
         else:
             chars.add(ch)
     return result + min(1, len(chars))
+
+
+'''
+Максимальное произведение
+легко
+# решено
+
+# озон
+Дан массив nums, состоящий из положительных целых чисел. Нужно вернуть максимальное произведение двух различных элементов массива.
+
+Пример 1:
+
+Ввод: nums = [5,3,10,2,8,5]
+Вывод: 80
+Объяснение: 10 * 8 = 80
+Пример 2:
+
+Ввод: nums = [10,10,10]
+Вывод: 100
+Ограничения:
+
+len(nums) >= 2
+nums[i] >= 1
+'''
+
+# мое решение
+def max_product(nums: List[int]) -> int:
+    max1 = nums[0]
+    max2 = nums[1]
+    for num in nums[2:]:
+        if max1 > max2 and num>max2:
+            max2=num
+        elif num >max1:
+            max1=num
+    return max1*max2
+
+
+# эталонное решение
+def max_product(nums: List[int]) -> int:
+    m1 = max(nums[0], nums[1])
+    m2 = min(nums[0], nums[1])
+    for i in range(2, len(nums)):
+        if nums[i] > m1:
+            m2 = m1
+            m1 = nums[i]
+        elif nums[i] > m2:
+            m2 = nums[i]
+
+    return m1 * m2
