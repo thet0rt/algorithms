@@ -548,3 +548,59 @@ def max_product(nums: List[int]) -> int:
             m2 = nums[i]
 
     return m1 * m2
+
+
+'''
+Монотонный массив
+легко
+# решено
+
+# озон
+Дан целочисленный массив nums. Нужно вернуть true, если массив монотонный, и false в обратном случае.
+
+Массив считается монотонным, если он отсортирован (по возрастанию или убыванию).
+
+Пример 1:
+
+Ввод: nums = [1,2,2,2,3]
+Вывод: true
+Пример 2:
+
+Ввод: nums = [5,4,-10]
+Вывод: true
+Пример 3:
+
+Ввод: nums = [5,4,1,2]
+Вывод: false
+Ограничения:
+
+len(nums) >= 1
+'''
+
+
+# мое решение, но я уже видел эталонное в уроке
+def is_monotonic(nums: List[int]) -> bool:
+    is_asc = True
+    is_desc = True
+    p = 0
+    while p + 1 < len(nums):
+        if nums[p + 1] < nums[p]:
+            is_asc = False
+        elif nums[p + 1] > nums[p]:
+            is_desc = False
+        p += 1
+
+    return is_asc or is_desc
+
+
+# эталонное решение
+def is_monotonic(nums: List[int]) -> bool:
+    # идея в том, что нам не важно монотонно возрастает массив
+    # или монотонно убыват, поэтому мы заводим 2 флага:
+    # на монотонное возрастание и на монотонное убывание
+    is_inc = True
+    is_dec = True
+    for i in range(1, len(nums)):
+        is_inc = is_inc and nums[i - 1] <= nums[i]
+        is_dec = is_dec and nums[i - 1] >= nums[i]
+    return is_inc or is_dec
