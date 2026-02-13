@@ -242,3 +242,151 @@ def find_competition_winners(statistics: List[List[List[int]]]) -> List[int]:
                 max_steps = new_stat[participant_id][0]
 
     return result
+
+
+'''
+Поиск анаграмм
+средне
+# решено
+
+# яндекс
+Даны строки s и t. Нужно найти все индексы в строке s,
+ с которых начинается подстрока — анаграмма строки t, и вернуть их в порядке возрастания.
+  Считается, что символы могут быть любыми и заранее не известны (алфавит не ограничен),
+   но на практике строки будут состоять только из символов ascii.
+'''
+# мое решение - втупую перебор..((((
+def find_anagrams(s: str, t: str) -> List[int]:
+    def is_anagram(s, t):
+        counter = [0 for _ in range(128)]
+        for char in s:
+            counter[ord(char)] += 1
+        for char in t:
+            counter[ord(char)] -=1
+        return counter == [0 for _ in range(128)]
+
+    result = []
+    an_length = len(t)
+    p = 0
+    while p+len(t) <= len(s):
+        if is_anagram(s[p:p+len(t)], t):
+            result.append(p)
+        p+=1
+
+    return result
+
+
+def find_anagrams(s: str, t: str) -> List[int]:
+    hash_map = defaultdict(int)
+    an_length = len(t)
+    result = []
+    for char in t:
+        hash_map[char] += 1
+
+    # первое окно
+    for char in s[0:len(t)]:
+        hash_map[char] -= 1
+        if hash_map[char] == 0:
+            del hash_map[char]
+    if not hash_map:
+        result.append(0)
+    p = 1
+
+    while p + len(t) - 1 < len(s):
+        hash_map[s[p - 1]] += 1
+        if hash_map[s[p-1]] == 0:
+            del hash_map[s[p-1]]
+        hash_map[s[p + len(t) - 1]] -= 1
+        if hash_map[s[p + len(t) - 1]] == 0:
+            del hash_map[s[p + len(t) - 1]]
+        if not hash_map:
+            result.append(p)
+        p += 1
+    return result
+
+
+s = 'abacbaab'
+t = 'aab'
+
+find_anagrams(s, t)
+
+'''
+Строгая симметрия по оси Y
+средне
+# решено
+
+# островок
+
+# сбердевайсы
+
+# яндекс
+Дан массив точек points. Нужно вернуть true, если существует такая прямая, параллельная оси Y, которая симметрично отражает все данные точки и false, если такой прямой нет.
+
+ВАЖНО: При этом каждая точка должна иметь симметричную ей точку в массиве с таким же числом вхождений.
+
+Пример 1:
+
+Ввод: points = [[1,2],[3,2]]
+Вывод: true
+Пример 2:
+
+Ввод: points = [[1,2],[3,2],[2,1],[2,1]]
+Вывод: true
+Пример 3:
+
+Ввод: points = [[2,3],[4,3],[3,1],[3,1]]
+Вывод: true
+Пример 4:
+
+Ввод: points = [[1,1],[2,1],[2,1]]
+Вывод: false
+Ограничения:
+
+1 ≤ len(points)
+Каждая точка — массив из двух целых чисел [x, y]
+Координаты x и y — целые числа
+'''
+
+# мое решение
+def is_symmetric(points: List[List[int]]) -> bool:
+    maxX = max(x for x,y in points)
+    minX = min(x for x,y in points)
+    hash_map = defaultdict(int)
+    for x, y in points:
+        if (x,y) == (maxX+minX - x, y):
+            continue
+        if hash_map.get((maxX+minX - x, y)):
+            hash_map[(maxX+minX - x, y)] -= 1
+            if hash_map[(maxX+minX - x, y)] == 0:
+                del hash_map[(maxX+minX - x, y)]
+        else:
+            hash_map[(x, y)]+=1
+    return not bool(hash_map)
+
+
+# эталонное решение
+def is_symmetric(points: List[List[int]]) -> bool:
+    # находим минимальный и максимальный X
+    maxX = max(x for x, y in points)
+    minX = min(x for x, y in points)
+
+    # ключ: координата точки, значение: кол-во точек
+    points_map = {}
+    for point in points:
+        map_key = (point[0], point[1])
+        if map_key not in points_map:
+            points_map[map_key] = 0
+        points_map[map_key] += 1
+
+    for x, y in points:
+        # формула: maxX + minX - x
+        #  позволяет находить значение по оси X симметричной точки
+
+        # проверяем наличие симметричной точки
+        if (maxX + minX - x, y) not in points_map:
+            return False
+        # проверяем, что число симметричных точек совпадает
+        if points_map[(maxX + minX - x, y)] != points_map[(x, y)]:
+            return False
+    return True
+
