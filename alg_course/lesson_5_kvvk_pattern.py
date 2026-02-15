@@ -726,3 +726,58 @@ def calculate(s: List[str]) -> int:
             prev_multiply = int(s[i + 1])
     result += prev_multiply
     return result
+
+
+'''
+Максимальная сумма подмассива - Алгоритм Кадана
+средне
+# решено
+
+# озон
+Дан массив чисел nums. 
+
+Необходимо найти в нём непрерывный подмассив с максимальной суммой элементов и вернуть эту сумму.
+
+Пример 1:
+
+Ввод: nums = [-2,1,-3,4,-1,2,1,-5,4]
+Вывод: 6
+Объяснение: максимальная сумма достигается на подмассиве [4, -1, 2, 1], сумма элементов которого равна 6.
+Пример 2:
+
+Ввод: nums = [-1,-2,-10,0]
+Вывод: 0
+Объяснение: Наибольшая сумма при подмассиве [0].
+Ограничения:
+
+len(nums) >= 1
+'''
+
+# мое решение
+def max_sum(nums: List[int]) -> int:
+    current_sum = nums[0]
+    max_summ = nums[0]
+    for idx, num in enumerate(nums[1:]):
+        if current_sum < 0:
+            current_sum = 0
+        current_sum += num
+        max_summ = max(max_summ, current_sum)
+    return max_summ
+
+
+# эталонное решение
+from typing import *
+
+def max_sum(nums: List[int]) -> int:
+    result = nums[0]
+    # prefix - хранит максимальную сумму на отрезке
+    prefix = nums[0]
+    for i in range(1, len(nums)):
+        # берем самый выгодный из вариантов:
+        # - nums[i] начинает формировать новую последовательность
+        # - nums[i] добавляется к предыдущей последовательности и увеличивает общую сумму
+        prefix = max(prefix + nums[i], nums[i])
+        result = max(prefix, result)
+    # разделение на prefix и result нужно, чтобы учитывать
+    # последовательность только из отрицательных чисел
+    return result
