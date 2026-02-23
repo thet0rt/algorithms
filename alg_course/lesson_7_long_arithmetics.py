@@ -123,3 +123,55 @@ def multiply(nums: List[int], n: int) -> List[int]:
         carry //= 10
         i += 1
     return nums
+
+
+
+'''
+Разбиение на 3 части
+легко
+# решено
+
+# яндекс
+Дан массив целых чисел nums. Нужно разбить его на три непрерывные непустые части. Верните минимально возможную сумму первых элементов каждой из частей после такого разбиения. Гарантируется, что разбиение всегда возможно.
+
+Пример 1:
+
+Ввод: nums = [3,1,2,4,5]
+Вывод: 6
+Объяснение: [3],[1],[2,4,5] → 3 + 1 + 2 = 6
+Пример 2:
+
+Ввод: nums = [5,2,1,3]
+Вывод: 8
+Объяснение: [5],[2],[1, 3] → 5 + 2 + 1 = 8
+Ограничения:
+
+len(nums) ≥ 3
+'''
+
+
+# мое решение
+def min_split_cost(nums: List[int]) -> int:
+    min1 = nums[0]
+    min2 = min(nums[1], nums[2])
+    min3 = max(nums[1], nums[2])
+
+    for num in nums[3:]:
+        if num < min2:
+            min3 = min2
+            min2 = num
+        else:
+            min3 = min(min3, num)
+
+    return min1 + min2 + min3
+
+
+# эталонное решение - ну тут хрень какая то с float, я не понял зачем
+def min_split_cost(nums: List[int]) -> int:
+    min1, min2 = float('inf'), float('inf')
+    for i in range(1, len(nums)):
+        if nums[i] < min1:
+            min1, min2 = nums[i], min1
+        elif nums[i] < min2:
+            min2 = nums[i]
+    return nums[0] + min1 + min2
