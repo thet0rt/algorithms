@@ -175,3 +175,104 @@ def min_split_cost(nums: List[int]) -> int:
         elif nums[i] < min2:
             min2 = nums[i]
     return nums[0] + min1 + min2
+
+
+# мое решение
+def is_power_of_two(n: int) -> bool:
+    while n != 1:
+        if n % 2:
+            return False
+        n = n // 2
+    return True
+
+
+# эталонное решение
+
+def is_power_of_two(n: int) -> bool:
+    return n > 0 and (n & (n - 1) == 0)
+
+
+'''
+Сумма hex чисел
+легко
+# решено
+
+# островок
+
+# яндекс
+Даны две строки s1 и s2, представляющие собой неотрицательные шестнадцатеричные числа (в нижнем регистре). Необходимо вернуть их сумму также в виде строки — шестнадцатеричного числа (в нижнем регистре).
+
+Пример 1:
+
+Ввод: s1 = "a", s2 = "5"
+Вывод: "f"
+Объяснение: 10 + 5 = 15, что в шестнадцатеричной системе равно "f"
+Пример 2:
+
+Ввод: s1 = "1a", s2 = "2b"
+Вывод: "45"
+Объяснение: 26 + 43 = 69, что в шестнадцатеричной системе равно "45"
+Ограничения:
+
+len(s1) ≥ 1
+len(s2) ≥ 1
+s1 и s2 содержат только символы '0'-'9' и 'a'-'f'
+
+'''
+
+# мое решение
+def sum_hex(s1: str, s2: str) -> str:
+    mapping = {
+        'a': 10,
+        'b': 11,
+        'c': 12,
+        'd': 13,
+        'e': 14,
+        'f': 15
+    }
+    summ_s1 = 0
+    for idx, char in enumerate(s1[::-1]):
+        num = char
+        if char in mapping:
+            num = mapping[char]
+        summ_s1 += int(num) * (16**idx)
+    summ_s2 = 0
+
+    for idx, char in enumerate(s2[::-1]):
+        num = char
+        if char in mapping:
+            num = mapping[char]
+        summ_s2 += int(num) * (16**idx)
+
+    return str(hex(summ_s1 + summ_s2))[2:]
+
+
+#эталонное решение
+from typing import *
+
+def sum_hex(s1: str, s2: str) -> str:
+    result = []
+    p1 = len(s1) - 1
+    p2 = len(s2) - 1
+    carry = 0
+
+    # Пока есть цифры в одном из чисел или есть остаток переноса
+    while p1 >= 0 or p2 >= 0 or carry > 0:
+        if p1 >= 0:
+            # Добавляем значение цифры из первого числа
+            digit1 = int(s1[p1], 16)
+            carry += digit1
+            p1 -= 1
+        if p2 >= 0:
+            # Добавляем значение цифры из второго числа
+            digit2 = int(s2[p2], 16)
+            carry += digit2
+            p2 -= 1
+        # Вычисляем сумму текущих цифр по модулю 16
+        digit_sum = carry % 16
+        result.append(hex(digit_sum)[2:])
+        # Обновляем перенос
+        carry = carry // 16
+
+    # Возвращаем результат в правильном порядке
+    return ''.join(reversed(result))
