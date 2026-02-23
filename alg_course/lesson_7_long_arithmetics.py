@@ -276,3 +276,86 @@ def sum_hex(s1: str, s2: str) -> str:
 
     # Возвращаем результат в правильном порядке
     return ''.join(reversed(result))
+
+'''
+Разворот слов
+легко
+# решено
+
+# островок
+
+# яндекс
+Дана строка s, содержащая символы латинского алфавита и пробелы. Нужно перевернуть только слова, оставив пробелы на своих местах.
+
+Под словом подразумевается последовательность не пробельных символов. Пробельные блоки (одиночные или подряд идущие пробелы) должны остаться на своих местах, в тех же позициях, где они были изначально.
+
+Пример 1:
+
+Ввод: s = "hello world"
+Вывод: "world hello"
+Пример 2:
+
+Ввод: s = "  this  is a test "
+Вывод: "  test  a is this "
+Пример 3:
+
+Ввод: s = "one"
+Вывод: "one"
+Ограничения:
+
+len(s) ≥ 1
+s содержит пробелы и символы латинского алфавита
+'''
+
+# мое решение
+def reverse_words(s: str) -> str:
+    s_list = []
+    submassive = []
+    for char in s:
+        if char != " ":
+            submassive.append(char)
+            continue
+        if submassive:
+            s_list.append("".join(submassive))
+            submassive = []
+        s_list.append(" ")
+    if submassive:
+        s_list.append("".join(submassive))
+    p1 = 0
+    p2 = len(s_list) - 1
+    while p1 < p2 and p1 < len(s_list) and p2 >= 0:
+        if s_list[p1] != " " and s_list[p2] != " ":
+            s_list[p1], s_list[p2] = s_list[p2], s_list[p1]
+            p1 += 1
+            p2 -= 1
+            continue
+        elif s_list[p1] == " ":
+            p1 += 1
+        elif s_list[p2] == " ":
+            p2 -= 1
+    return "".join(s_list)
+
+
+# эталонное решение
+# Переворачивает порядок слов в строке, сохраняя позиции пробелов
+def reverse_words(s: str) -> str:
+    parts = []
+    current = ''
+
+    # В цонце цикла parts будет содержать подряд идущие пробельные и не пробельные символы
+    for ch in s:
+        # Если тип текущего блока изменился
+        if current and (ch == ' ') != (current[0] == ' '):
+            parts.append(current)
+            current = ''
+        current += ch
+
+    # Добавляем последний блок, если он остался
+    if current:
+        parts.append(current)
+
+    # Сохраняем только слова (не пробелы), чтобы потом их вставить в обратном порядке
+    words = [p for p in parts if p[0] != ' ']
+
+    # Собираем финальный результат: пробелы оставляем, слова берём с конца
+    return ''.join(p if p[0] == ' ' else words.pop() for p in parts)
