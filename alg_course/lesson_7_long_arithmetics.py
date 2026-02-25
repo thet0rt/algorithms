@@ -359,3 +359,172 @@ def reverse_words(s: str) -> str:
 
     # Собираем финальный результат: пробелы оставляем, слова берём с конца
     return ''.join(p if p[0] == ' ' else words.pop() for p in parts)
+
+
+'''
+Поиск монотонной последовательности
+легко
+# решено
+
+# островок
+
+# яндекс
+Дан неотсортированный массив чисел nums. Необходимо найти монотонную последовательность максимальной длины (строго убывающую или строго возрастающую) и вернуть пару индексов начала и конца последовательности.
+
+Пример 1:
+
+Ввод: nums = [2,7,5,4,4,3]  
+Вывод: [1,3]
+Объяснение: монотонно убывающая последовательность [7,5,4] максимальной длины
+Пример 2:
+
+Ввод: nums = [15,1,3,5,10,7,4,3,1]
+Вывод: [4,8]
+Объяснение: монотонно убывающая последовательность [10,7,4,3,1] максимальной длины
+Ограничения:
+
+len(nums) >= 1
+'''
+
+
+# мое решение
+def search_monoton(nums: List[int]) -> List[int]:
+    max_seq = 1
+    seq_list = [0, 0]
+    p = 1
+    asc = True
+    current_seq = 1
+    while p < len(nums):
+        if nums[p] > nums[p - 1]:
+            if asc is True:
+                current_seq += 1
+            else:
+                asc = True
+                current_seq = 2
+        elif nums[p] < nums[p - 1]:
+            if asc is False:
+                current_seq += 1
+            else:
+                asc = False
+                current_seq = 2
+        else:
+            current_seq = 1
+        if current_seq > max_seq:
+            seq_list = [p - current_seq + 1, p]
+            max_seq = current_seq
+        p += 1
+
+    return seq_list
+
+
+# эталонное решение
+def search_monoton(nums: List[int]) -> List[int]:
+    max_len = inc_len = dec_len = 1
+    result = [0, 0]
+
+    for idx in range(1, len(nums)):
+        # последовательность возрастает
+        if nums[idx - 1] < nums[idx]:
+            inc_len += 1
+            dec_len = 1
+        # последовательность убывает
+        elif nums[idx - 1] > nums[idx]:
+            dec_len += 1
+            inc_len = 1
+        # сбрасываем последовательность
+        else:
+            inc_len = 1
+            dec_len = 1
+
+        # обновляем максимальную длину если
+        # текущая длина больше предыдущей максимальной
+        curr_len = max(inc_len, dec_len)
+        if curr_len > max_len:
+            result = [idx - curr_len + 1, idx]
+            max_len = curr_len
+
+    return result
+
+
+'''
+К ближайших чисел
+легко
+# решено
+
+# вк
+
+# островок
+
+# яндекс
+Дан массив nums, отсортированный в неубывающем порядке, индекс idx и число k. Нужно найти k ближайших к значению nums[idx] чисел в массиве и вернуть в любом порядке. При равных расстояниях предпочтение отдаётся меньшим числам.
+
+Пример 1:
+
+Ввод: nums = [2,5,5,5,8], idx = 2, k = 4
+Вывод: [2,5,5,5]
+Объяснение: ответ [2,5,5,5], а не [5,5,5,8], потому что 2 < 8 при abs(8-5) = abs(2-5)
+Пример 2:
+
+Ввод: nums = [-100,1,2,5,8,9], idx = 4, k = 2
+Вывод: [8,9]
+Ограничения:
+
+len(nums) >= 1
+0 <= idx < len(nums)
+k >= 0
+'''
+
+# мое решение
+def find_nearest_numbers(nums: List[int], idx: int, k: int) -> List[int]:
+    result = []
+    p1 = idx - 1
+    p2 = idx + 1
+    if k > 0:
+        result.append(nums[idx])
+    k-=1
+    while k > 0:
+        if p1 < 0 and p2 >= len(nums):
+            return result
+        if p1 < 0:
+            result.append(nums[p2])
+            p2+=1
+            k-=1
+            continue
+        if p2 >= len(nums):
+            result.append(nums[p1])
+            p1-=1
+            k-=1
+            continue
+        diff1 = abs(nums[idx] - nums[p1])
+        diff2 = abs(nums[idx] - nums[p2])
+
+        if diff1 <= diff2:
+            result.append(nums[p1])
+            p1-=1
+            k-=1
+        else:
+            result.append(nums[p2])
+            p2+=1
+            k-=1
+    return result
+
+
+# эталонное решение
+from typing import *
+
+def find_nearest_numbers(nums: List[int], idx: int, k: int) -> List[int]:
+    if k == 0:
+        return []
+    # добавляем в ответ nums[idx]
+    result = [nums[idx]]
+    # l - индекс кандидата на добавление слева от idx
+    # r - индекс кандидата на добавление справа от idx
+    l, r = idx - 1, idx + 1
+    for _ in range(k - 1):
+        if r >= len(nums) or l >= 0 and abs(nums[idx] - nums[l]) <= abs(nums[idx] - nums[r]):
+            result.append(nums[l])
+            l -= 1
+        else:
+            result.append(nums[r])
+            r += 1
+    return result
