@@ -796,4 +796,29 @@ def reverse_vowels(s: str) -> str:
         p1+=1
     return ''.join(vowels_reversed)
 
-reverse_vowels('aeiou')
+# reverse_vowels('aeiou')
+
+
+def is_almost_palindrome(s: str) -> bool:
+    def is_palindrome(s: str) -> bool:
+        p1 = 0
+        p2 = len(s) - 1
+        while p1 < p2:
+            if s[p1] != s[p2]:
+                return False
+            p1 += 1
+            p2 -= 1
+        return True
+
+    p1 = 0
+    p2 = len(s) - 1
+    while p1 < p2:
+        if s[p1] != s[p2]:
+            return is_palindrome(s[p1 + 1:p2+1]) or is_palindrome(s[p1:p2])
+        p1 += 1
+        p2 -= 1
+
+    return True
+
+
+is_almost_palindrome(s="abc")

@@ -528,3 +528,110 @@ def find_nearest_numbers(nums: List[int], idx: int, k: int) -> List[int]:
             result.append(nums[r])
             r += 1
     return result
+
+
+
+def compare(s: str, t: str) -> bool:
+    p1 = len(s) - 1
+    p2 = len(t) - 1
+    skip1 = 0
+    skip2 = 0
+    while p1 >= 0 or p2 >= 0:
+        print(f'{p1} {p2}')
+        if p1>=0 and s[p1] == '#':
+            skip1+=1
+            p1-=1
+            continue
+        if p2>=0 and t[p2] == '#':
+            skip2+=1
+            p2-=1
+            continue
+        if skip1 > 0:
+            p1-=1
+            skip1-=1
+            continue
+        if skip2 > 0:
+            p2-=1
+            skip2-=1
+            continue
+        if p1 < 0 or p2 <0:
+            return False
+        if s[p1] != t[p2]:
+            return False
+        p1-=1
+        p2-=1
+    return True
+#
+#
+# t = 'aaaa###a'
+# s = 'aaa###a'
+#
+# compare(s, t)
+
+
+
+def remove_duplicates(nums: List[int]) -> List[int]:
+    hash_map = set()
+    p1 = 0
+    p2 = len(nums) - 1
+    while p1 < len(nums) and p1 <= p2:
+        print(f'{p1} {p2}')
+        if nums[p1] in hash_map:
+            nums[p1], nums[p2] = nums[p2], nums[p1]
+            p2-=1
+            continue
+        else:
+            hash_map.add(nums[p1])
+            p1+=1
+
+    return nums[:p2+1]
+
+
+# remove_duplicates([1, 2, 2])
+
+
+def max_area(height: List[int]) -> int:
+    _max_area = 0
+    p1 = 0
+    p2 = len(height) - 1
+    while p1 < p2:
+        curr_area = min(height[p1], height[p2]) * (p2 - p1)
+        _max_area = max(_max_area, curr_area)
+        if p1 > p2:
+            p2 -= 1
+        else:
+            p1 += 1
+
+    return _max_area
+
+#
+# nums = [2, 3, 4, 5, 18, 17, 6]
+#
+# max_area(nums)
+
+
+def find_duplicate_num(nums: List[int]) -> int:
+    '''
+    [3, 1, 3, 4, 2]
+    [0 ,1 ,2, 3, 4]
+    Алгоритм Флойда - поиск цикла в связном списке
+    Вот мы нашли, что есть цикл. Теперь надо найти голову
+    '''
+    slow = nums[0]
+    fast = nums[0]
+    while fast < len(nums) and slow < len(nums):
+        if nums[fast] == nums[slow]:
+            break
+        else:
+            slow = nums[slow]
+            fast = nums[nums[fast]]
+
+    slow = nums[0]
+    while slow != fast:
+        slow = nums[slow]
+        fast = nums[fast]
+    return slow
+
+nums = [3, 1, 3, 4, 2]
+
+find_duplicate_num(nums)
