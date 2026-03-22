@@ -221,3 +221,142 @@ def k_elements_multiply(price: List[int], k: int) -> List[int]:
         result.append(next_multiply)
     return result
 
+
+'''
+Рост акций компании
+средне
+# решено
+
+# яндекс
+Дан массив stock, где stock[i] = 1 означает рост акций в i-й день, а stock[i] = -1 — падение. Требуется найти максимальное количество подряд идущих дней роста акций. 
+
+Пример 1:
+
+Ввод: stock = [-1,1,-1,1,1,1,1,-1,1]
+Вывод: 4
+Объяснение: Самый долгий рост акций - 4 дня (с 4 по 7 день).
+Пример 2:
+
+Ввод: stock = [1,-1,-1,1]
+Вывод: 1
+Ограничения:
+
+0 <= len(stock)
+Значение массива stock это -1 или 1
+'''
+
+# мое решение
+def longest_stock_growth(nums: list[int]) -> int:
+    current_count = 0
+    max_count = 0
+    for num in nums:
+        if num == 1:
+            current_count +=1
+        else:
+            current_count = 0
+        max_count = max(max_count, current_count)
+    return max_count
+
+
+# эталонное решение 1
+from typing import *
+
+def longest_stock_growth(stock: List[int]) -> int:
+    max_count = 0  # максимальное количество подряд идущих единиц
+    count = 0  # текущее количество подряд идущих единиц
+    for num in stock:
+        if num == 1:
+            count += 1
+            # обновляем максимальное значение при необходимости
+            max_count = max(max_count, count)
+        else:
+            count = 0  # сбрасываем счетчик, если встречается 0
+    return max_count
+
+
+# эталонное решение 2
+from typing import *
+
+def longest_stock_growth(stock: List[int]) -> int:
+    l = 0
+    r = 0
+    result = 0
+    while l < len(stock):
+        while r + 1 < len(stock) and stock[r] == stock[r + 1]:
+            r += 1
+
+        if stock[r] == 1:
+            result = max(result, r - l + 1)
+
+        l = r + 1
+        r = r + 1
+    return result
+
+
+'''
+Сжатие значений счетчика
+средне
+# решено
+
+# яндекс
+Дан отсортированный по возрастанию массив уникальных чисел counter, где counter[i] — значение метрики в i-ю секунду.
+
+Чтобы упростить восприятие, нужно сжать последовательность, объединяя подряд идущие числа например: [1,2,3,7] -> ["1->3","7"]:
+
+Если числа идут подряд (разница = 1), записать в виде "x->y".
+В остальных случаях оставить как есть ("x").
+Пример 1:
+
+Ввод: сounter = [1,2,3,4,5,8,10,15,16,20]
+Вывод: ["1->5","8","10","15->16","20"]
+Пример 2:
+
+Ввод: сounter = [-3,-2]
+Вывод: ["-3->-2"]
+Пример 3:
+
+Ввод: сounter = [0,2,4,6]
+Вывод: ["0","2","4","6"]
+Ограничения:
+
+0 <= len(сounter)
+'''
+
+# мое решение (= эталонному, тк это задача из примера объяснения темы)
+def counter_ranges(nums: list[int]) -> list[str]:
+    l = 0
+    r = 0
+    result = []
+
+    while r < len(nums):
+        while r + 1 < len(nums) and nums[r] + 1 == nums[r + 1]:
+            r += 1
+        if r == l:
+            result.append(str(nums[l]))
+        else:
+            result.append(f'{nums[l]}->{nums[r]}')
+        l = r + 1
+        r = r + 1
+
+    return result
+
+
+# эталонное решение
+from typing import *
+
+def counter_ranges(counter: List[int]) -> List[str]:
+    l = 0
+    r = 0
+    result = []
+    while l < len(counter):
+        while r + 1 < len(counter) and counter[r] + 1 == counter[r + 1]:
+            r += 1
+
+        if r != l:
+            result.append(f'{counter[l]}->{counter[r]}')
+        else:
+            result.append(f'{counter[l]}')
+
+        l = r + 1
+        r = r + 1
+    return result
