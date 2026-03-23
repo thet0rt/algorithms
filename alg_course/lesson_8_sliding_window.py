@@ -451,4 +451,84 @@ def best_parking_spot(spots: List[int]) -> int:
         r = r + 1
     return result
 
+'''
+Кодирование повторов
+средне
+# решено
 
+# озон
+
+# яндекс
+Дан массив chars и нужно реализовать алгоритм сжатия строки по следующим правилам:
+
+Подряд идущие одинаковые символы группируются.
+Группа включает в себя всегда максимально возможное число одинаковых подряд идущих символов.
+Если в группе только одна буква, то пишется только она.
+Если в группе более одной буквы, то пишется сначала буква, а потом число раз, которое она встретилась.
+Если буква встретилась более 9 раз, то каждый символ количества должен быть записан отдельно.
+Пример 1:
+
+Ввод: chars = ["x","x","y","z","z","z"]
+Вывод: ["x","2","y","z","3"]
+Пример 2:
+
+Ввод: chars = ["y","y","x","x","x","x","x","x","x","x","x","x","x","x","y","y"]
+Вывод: ["y","2","x","1","2","y","2"]
+Пример 3:
+
+Ввод: chars = ["a","b","c"]
+Вывод: ["a","b","c"]
+Ограничения:
+
+0 <= len(chars)
+Массив chars может содержать только английские буквы.
+'''
+
+# мое решение
+def compress(chars: list[str]) -> list[str]:
+    result = []
+    l = 0
+    r = 0
+    while r < len(chars):
+        while r+1 < len(chars) and chars[r] == chars[r+1]:
+            r+=1
+        if l == r:
+            result.append(chars[l])
+        else:
+            result.append(chars[l])
+            count = r - l + 1
+            if count 10:
+                result.append(str(count))
+            else:
+                for c in str(count):
+                    result.append(c)
+        l = r+1
+        r = r+1
+    return result
+
+
+# эталонное решение
+def compress(chars: List[str]) -> List[str]:
+    l = 0
+    r = 0
+    result = []
+    while l < len(chars):
+        # бежим правым указателем, пока в интервале [l, r]
+        # находятся все одинаковые символы
+        while r + 1 < len(chars) and chars[r] == chars[r + 1]:
+            r += 1
+
+        # обновляем ответ
+        windowSize = r - l + 1
+        if windowSize == 1:
+            result.append(chars[r])
+        else:
+            result.append(chars[r])
+            result += list(str(windowSize))
+
+        # интервалы не пересекаются, поэтому сдвигаем
+        # на r + 1 - именно отсюда будет начинаться
+        # следующий интервал
+        l = r + 1
+        r = r + 1
+    return result
