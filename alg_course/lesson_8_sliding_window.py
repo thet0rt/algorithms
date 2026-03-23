@@ -363,7 +363,7 @@ def counter_ranges(counter: List[int]) -> List[str]:
 
 
 # best_parking_spot(nums = [1, 0, 0, 0, 1, 0, 1])
-best_parking_spot(nums = [1, 0, 0, 0])
+# best_parking_spot(nums = [1, 0, 0, 0])
 
 
 '''
@@ -497,7 +497,7 @@ def compress(chars: list[str]) -> list[str]:
         else:
             result.append(chars[l])
             count = r - l + 1
-            if count 10:
+            if count < 10:
                 result.append(str(count))
             else:
                 for c in str(count):
@@ -531,4 +531,115 @@ def compress(chars: List[str]) -> List[str]:
         # следующий интервал
         l = r + 1
         r = r + 1
+    return result
+
+
+# Паттерн "Пересекающиеся окна"
+from typing import *
+
+#
+# def calculate(nums: List[int]) -> List[str]:
+#     l = 0
+#     # обрати внимание, что r = -1
+#     r = -1
+#     # Здесь можно добавить другие переменные, если они используются в вашем коде
+#     while l < len(nums):
+#         while r + 1 < len(counter) and  # тут условие, что следующий элемент можно взять в окно
+#             # возможна дополнительная обработка ...
+#             r += 1
+#
+#         # обновляем ответ
+#         # ...
+#
+#         # обновляем состояние плавающего окна перед сдвигом
+#         # ...
+#
+#         # сдвигаем левый указатель
+#         l += 1
+#     return result
+
+
+'''
+Цепочка из k-генов
+средне
+# решено
+
+# желтый банк
+Дана строка gene, представляющая последовательность генов, где каждый ген — это один символ.
+
+Требуется найти самую длинную непрерывную подстроку, содержащую не более k уникальных генов, где k ≤ числа различных символов.
+
+Пример 1:
+
+Ввод: gene = "YYxxXXXyyy", k = 3
+Вывод: 8
+Объяснение: самая длинная непрерывная последовательность генов с максимум 3-мя разными генами это "xxXXXyyy" (регистр буквы имеет значение).
+Пример 2:
+
+Ввод: gene = "yyy", k = 0
+Вывод: 0
+Пример 3:
+
+Ввод: gene = "aXYYYXYXYbccc", k = 1
+Вывод: 3
+Ограничения:
+
+0 <= len(gene)
+0 <= k <= len(gene)
+gene содержит ASCII символы
+'''
+
+# мое решение
+from collections import defaultdict
+def longest_gene_sequence(nums: str, target: int) -> int:
+    r = -1
+    l = 0
+    result = 0
+
+    if target == 0:
+        return result
+    counter = defaultdict(int)
+    while l < len(nums):
+        while r + 1 < (len(nums)) and (len(counter) < target or nums[r + 1] in counter):
+            counter[nums[r + 1]] += 1
+            r += 1
+
+        result = max(result, r - l + 1)
+        counter[nums[l]] -= 1
+        if counter[nums[l]] == 0:
+            del counter[nums[l]]
+        l += 1
+
+    return result
+
+
+# эталонное решение
+from typing import *
+
+def longest_gene_sequence(gene: str, k: int) -> int:
+    l = 0
+    # r = -1, чтобы добавление первого элемента не было исключением
+    r = -1
+    result = 0
+
+    # ключ: название гена, значение: сколько раз встретился ген в плавающем окне
+    gene_count: dict[str, int] = {}
+
+    while l < len(gene):
+        while r + 1 < len(gene) and (len(gene_count) < k or gene[r + 1] in gene_count):
+            gene_count[gene[r + 1]] = gene_count.get(gene[r + 1], 0) + 1
+            r += 1
+
+        # обновляем ответ
+        window_size = r - l + 1
+        result = max(result, window_size)
+
+        # двигаем l (левую границу окна) на 1 и обновляем число уникальных символов
+        gene_count[gene[l]] = gene_count.get(gene[l], 0) - 1
+        if gene_count[gene[l]] <= 0:
+            # <=, а не == т.к. при k = 0 gene_count[gene[l]] -= 1 добавит ключ gene[l]
+            # а так происходить не должно, поэтому условие <= 0
+            del gene_count[gene[l]]
+        l += 1
+
     return result
