@@ -829,3 +829,71 @@ def longest_stock_growth(stock: List[int], k: int) -> int:
         l = l + 1
     return result
 
+
+'''
+Цепочка уникальных генов
+средне
+# решено
+
+# озон
+Дана строка gene, представляющая последовательность генов, где каждый ген — это одна буква английского алфавита.
+
+Требуется найти самую длинную непрерывную подстроку, в которой все гены уникальны (без повторяющихся букв).
+
+Пример 1:
+
+Ввод: gene = "yxyabcxyx"
+Вывод: 5
+Объяснение: "xyabc" или "yabcx" или "abcxy" самые длинные подстроки с длинной 5.
+Пример 2:
+
+Ввод: gene = "Aac"
+Вывод: 3
+Пример 3:
+
+Ввод: gene = "ffff"
+Вывод: 1
+Ограничения:
+
+0 <= len(gene)
+Строка gene может быть содержать только английские буквы
+'''
+
+# мое решение
+def longest_gene_sequence(nums: str) -> int:
+    hash_map = set()
+    r = -1
+    l = 0
+    result = 0
+    while l < len(nums):
+        while r + 1 < len(nums) and nums[r + 1] not in hash_map:
+            hash_map.add(nums[r + 1])
+            r += 1
+
+        result = max(result, r - l + 1)
+        hash_map.remove(nums[l])
+        l += 1
+
+    return result
+
+from typing import *
+
+# эталонное решение
+def longest_gene_sequence(gene: str) -> int:
+    # коллекция уникальных генов в окне
+    gene_unique = set()
+    l, r = 0, -1
+    window_size, result = 0, 0
+
+    while l < len(gene):
+        while r + 1 < len(gene) and gene[r + 1] not in gene_unique:
+            gene_unique.add(gene[r + 1])
+            r += 1
+        # обновляем ответ
+        window_size = r - l + 1
+        result = max(result, window_size)
+        # удаляем символ, который выходит из окна
+        gene_unique.discard(gene[l])
+        l += 1
+
+    return result
