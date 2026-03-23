@@ -748,3 +748,84 @@ def longest_stock_growth(stock: List[int]) -> int:
         zerosCount = 0
         l = max(zeroIdx + 1, l + 1)
     return result
+
+
+'''
+Наглый подставной отчет
+средне
+# решено
+
+# яндекс
+Дан массив stock, где stock[i] = 1 означает рост акций в i-й день, а stock[i] = 0 — падение.
+
+Компания терпит убытки и готовит подставной отчет для инвесторов, в котором можно улучшить показатели, заменив до k дней падения (0) на рост (1).
+
+Требуется найти максимальное количество подряд идущих дней роста акций с учетом такой замены.
+
+Нумерация в массиве начинается с единицы, а не с нуля.
+
+Пример 1:
+
+Ввод: stock = [1,0,1,1,0,1,1,0], k = 2
+Вывод: 7
+Объяснение: самый долгий рост акций с 1 по 7 день с заменой в 2 и 5 днях.
+Пример 2:
+
+Ввод: stock = [1,0,0,1], k = 1
+Вывод: 2
+Пример 3:
+
+Ввод: stock = [0], k = 0
+Вывод: 0
+Ограничения:
+
+0 <= len(stock)
+Значение массива stock : 0 или 1
+'''
+
+# мое решение
+def longest_stock_growth(nums: list[int], k: int) -> int:
+    r = -1
+    l = 0
+    result = 0
+    zero_count = 0
+
+    while l < len(nums):
+        while r + 1 < len(nums) and (zero_count < k or nums[r + 1] != 0):
+            if nums[r + 1] == 0:
+                zero_count += 1
+            r += 1
+
+        result = max(result, r - l + 1)
+        if nums[l] == 0:
+            zero_count -= 1
+        l += 1
+    return result
+
+# эталонное решение
+from typing import *
+
+
+def longest_stock_growth(stock: List[int], k: int) -> int:
+    l = 0
+    # r = -1, чтобы добавление первого элемента не было исключением
+    r = -1
+    result = 0
+    zerosCount = 0
+
+    while l < len(stock):
+        while r + 1 < len(stock) and (stock[r + 1] == 1 or zerosCount < k):
+            if stock[r + 1] == 0:
+                zerosCount += 1
+            r += 1
+
+        # обновляем ответ
+        windowSize = r - l + 1
+        result = max(result, windowSize)
+
+        # сдвигаем на l + 1 левую границу и поддерживаем
+        # актуальное число нулей в окне
+        zerosCount += -1 if stock[l] == 0 else 0
+        l = l + 1
+    return result
+
