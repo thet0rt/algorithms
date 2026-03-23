@@ -643,3 +643,108 @@ def longest_gene_sequence(gene: str, k: int) -> int:
         l += 1
 
     return result
+
+
+'''
+Подставной отчет
+средне
+# решено
+
+# яндекс
+Дан массив stock, где stock[i] = 1 означает рост акций в i-й день, а stock[i] = 0 — падение.
+
+Компания терпит убытки и готовит отчет для инвесторов, в котором можно улучшить показатели, заменив один день падения (0) на рост (1).
+
+Требуется найти максимальное количество подряд идущих дней роста акций с учетом такой замены.
+
+Нумерация в массиве начинается с единицы, а не с нуля.
+
+Пример 1:
+
+Ввод: stock = [1,1,0,1,1,1,1,0,1]
+Вывод: 7
+Объяснение: самый долгий рост акций с 1 по 7 день с заменой в 3 дне.
+Пример 2:
+
+Ввод: stock = [0]
+Вывод: 1
+Пример 3:
+
+Ввод: stock = [1,0,0,1]
+Вывод: 2
+Ограничения:
+
+0 <= len(stock)
+Значение массива stock : 0 или 1
+'''
+
+# мое решение
+def longest_stock_growth(nums: list[int]) -> int:
+    r = -1
+    l = 0
+    result = 0
+    zero_count = 0
+    while l < len(nums):
+        while r + 1 < len(nums) and (zero_count < 1 or nums[r + 1] != 0):
+            if nums[r + 1] == 0:
+                zero_count += 1
+            r += 1
+
+        result = max(result, r - l + 1)
+        if nums[l] == 0:
+            zero_count -= 1
+        l += 1
+
+    return result
+
+# эталонное решение 1
+from typing import *
+
+
+def longest_stock_growth(stock: List[int]) -> int:
+    max_count = 0  # максимальное количество подряд идущих единиц
+    count = 0  # текущее количество подряд идущих единиц
+    prev = 0  # количество единиц до последнего нуля
+
+    for num in stock:
+        if num == 1:
+            count += 1
+        else:
+            # встретили ноль — текущая серия становится предыдущей
+            prev = count
+            count = 0
+
+        # prev + 1 (замена нуля) + count
+        max_count = max(max_count, prev + 1 + count)
+
+    # если нулей не было, нельзя ничего заменить
+    return min(max_count, len(stock))
+
+# эталонное решение с использованием паттерна
+from typing import *
+
+
+def longest_stock_growth(stock: List[int]) -> int:
+    l = 0
+    # r = -1, чтобы добавление первого элемента не было исключением
+    r = -1
+    result = 0
+    zerosCount = 0
+    zeroIdx = 0
+
+    while l < len(stock):
+        while r + 1 < len(stock) and (stock[r + 1] == 1 or zerosCount < 1):
+            if stock[r + 1] == 0:
+                zerosCount += 1
+                zeroIdx = r + 1
+            r += 1
+
+        # обновляем ответ
+        windowSize = r - l + 1
+        result = max(result, windowSize)
+
+        # сдвигаем на zeroIdx, когда у нас есть 0 в окне
+        # сдвигаем на l + 1, если нулей в окне нет (нужно, чтобы не зациклиться)
+        zerosCount = 0
+        l = max(zeroIdx + 1, l + 1)
+    return result
