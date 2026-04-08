@@ -23,6 +23,8 @@
 len(gene) ≥ 0
 k ≥ 1
 '''
+from tabnanny import check
+
 
 # мое решение
 def chance_of_meatball_precipitations(gene: str, k: int) -> float:
@@ -897,3 +899,101 @@ def longest_gene_sequence(gene: str) -> int:
         l += 1
 
     return result
+
+
+'''
+Поиск мутирующего вируса
+средне
+# решено
+
+# яндекс
+Необходимо вернуть true, если в строке gene встречается строка virus или любая другая строка, которая является пермутацией строки virus.
+
+Пермутацией строки называется любая перестановка ее букв. Например, для строки "abb" пермутациями будут "bab" и "bba".
+
+Пример 1:
+
+Ввод: gene = "cdeebba", virus = "abb"
+Вывод: true
+Объяснение: нужно проверить, есть ли в строке "cdeebba" подстрока "abb" или "bab" или "bba". Есть подстрока "bba", поэтому вернем true.
+Пример 2:
+
+Ввод: gene = "xyxxux", virus = "xxx"
+Вывод: false
+Пример 3:
+
+Ввод: gene = "monstergen", virus = "ster"
+Вывод: true
+Ограничения:
+
+0 <= len(gene)
+0 <= len(virus)
+Строка gene и строка virus могут содержать только английские буквы
+'''
+
+
+
+# мое решение
+from collections import defaultdict
+def check_for_virus(gene: str, virus: str) -> bool:
+    window_size = len(virus)
+    if len(gene) < len(virus):
+        return False
+    hash_virus = defaultdict(int)
+    for char in virus:
+        hash_virus[char] += 1
+
+
+    r = window_size - 1
+    l = 0
+
+    for i in range(window_size):
+        hash_virus[gene[i]] -= 1
+        if hash_virus[gene[i]] == 0:
+            del hash_virus[gene[i]]
+    if not hash_virus:
+        return True
+    while r + 1 < len(gene):
+        hash_virus[gene[l]] += 1
+        hash_virus[gene[r + 1]] -= 1
+        if hash_virus[gene[l]] == 0:
+            del hash_virus[gene[l]]
+        if hash_virus[gene[r + 1]] == 0:
+            del hash_virus[gene[r + 1]]
+        if not hash_virus:
+            return True
+        l += 1
+        r += 1
+    return False
+
+
+# эталонное решение
+from typing import *
+from collections import defaultdict
+
+def check_for_virus(gene: str, virus: str) -> bool:
+    virusGene = defaultdict(int)
+    for ch in virus:
+        virusGene[ch] += 1
+
+    l = 0
+    r = -1
+    windowGene = defaultdict(int)
+
+    while l < len(gene):
+        while r + 1 < len(gene) and windowGene[gene[r + 1]] + 1 <= virusGene[gene[r + 1]]:
+            windowGene[gene[r + 1]] += 1
+            r += 1
+
+        windowSize = r - l + 1
+        if len(virus) == windowSize:
+            return True
+
+        windowGene[gene[l]] -= 1
+        if windowGene[gene[l]] == 0:
+            del windowGene[gene[l]]
+        elif windowGene[gene[l]] < 0:
+            del windowGene[gene[l]]
+            r = l
+        l += 1
+    return False
